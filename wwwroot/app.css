@@ -1,14 +1,56 @@
+/* CSS 自定義變數 - 金融主題色彩 */
+:root {
+    /* 主要色彩 */
+    --bs-primary: #1b6ec2;
+    --bs-secondary: #6c757d;
+    
+    /* 金融專用色彩 */
+    --financial-gain: #28a745;        /* 綠色 - 上漲/盈利 */
+    --financial-loss: #dc3545;        /* 紅色 - 下跌/虧損 */
+    --financial-neutral: #6c757d;     /* 灰色 - 中性/無變化 */
+    --financial-warning: #ffc107;     /* 黃色 - 警告/風險 */
+    --financial-info: #17a2b8;        /* 藍色 - 資訊 */
+    
+    /* 背景色彩 */
+    --bg-light: #f8f9fa;
+    --bg-dark: #343a40;
+    --bg-sidebar: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    
+    /* 文字色彩 */
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-muted: #8e8e93;
+    
+    /* 邊框色彩 */
+    --border-color: #dee2e6;
+    --border-light: #e9ecef;
+    
+    /* 陰影效果 */
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+/* 基礎樣式 */
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* 數字顯示字體 - 適合金融數據 */
+.financial-number, .number-display {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-variant-numeric: tabular-nums;
 }
 
 a, .btn-link {
-    color: #006bb7;
+    color: var(--bs-primary);
 }
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2;
+    background-color: var(--bs-primary);
     border-color: #1861ac;
 }
 
@@ -48,4 +90,193 @@ h1:focus {
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
+}
+
+/* 金融應用專用工具類別 */
+.text-gain {
+    color: var(--financial-gain) !important;
+}
+
+.text-loss {
+    color: var(--financial-loss) !important;
+}
+
+.text-neutral {
+    color: var(--financial-neutral) !important;
+}
+
+.bg-gain {
+    background-color: var(--financial-gain) !important;
+}
+
+.bg-loss {
+    background-color: var(--financial-loss) !important;
+}
+
+.bg-neutral {
+    background-color: var(--financial-neutral) !important;
+}
+
+.badge-gain {
+    background-color: var(--financial-gain);
+    color: white;
+}
+
+.badge-loss {
+    background-color: var(--financial-loss);
+    color: white;
+}
+
+.badge-neutral {
+    background-color: var(--financial-neutral);
+    color: white;
+}
+
+/* 數據卡片樣式 */
+.data-card {
+    background: white;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.15s ease-in-out;
+}
+
+.data-card:hover {
+    box-shadow: var(--shadow);
+}
+
+.data-card-header {
+    padding: 1rem 1.25rem 0.5rem;
+    border-bottom: 1px solid var(--border-light);
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.data-card-body {
+    padding: 1.25rem;
+}
+
+/* 統計數字樣式 */
+.stat-number {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    margin-bottom: 0;
+}
+
+.stat-change {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.stat-change.positive {
+    color: var(--financial-gain);
+}
+
+.stat-change.negative {
+    color: var(--financial-loss);
+}
+
+.stat-change::before {
+    content: '';
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-right: 0.25rem;
+    vertical-align: middle;
+}
+
+.stat-change.positive::before {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 6px solid var(--financial-gain);
+}
+
+.stat-change.negative::before {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 6px solid var(--financial-loss);
+}
+
+/* 表格樣式增強 */
+.table-financial {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.table-financial .financial-number {
+    text-align: right;
+    padding-right: 1rem;
+}
+
+.table-financial .text-gain {
+    font-weight: 600;
+}
+
+.table-financial .text-loss {
+    font-weight: 600;
+}
+
+/* 按鈕樣式增強 */
+.btn-gain {
+    color: white;
+    background-color: var(--financial-gain);
+    border-color: var(--financial-gain);
+}
+
+.btn-gain:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-loss {
+    color: white;
+    background-color: var(--financial-loss);
+    border-color: var(--financial-loss);
+}
+
+.btn-loss:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+/* 響應式增強 */
+@media (max-width: 768px) {
+    .stat-number {
+        font-size: 1.75rem;
+    }
+    
+    .data-card {
+        margin-bottom: 1rem;
+    }
+    
+    .table-financial {
+        font-size: 0.875rem;
+    }
+    
+    .table-financial .financial-number {
+        padding-right: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .stat-number {
+        font-size: 1.5rem;
+    }
+    
+    .data-card-header,
+    .data-card-body {
+        padding: 0.75rem;
+    }
 }
