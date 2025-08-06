@@ -1,0 +1,22 @@
+@switch (State)
+{
+    case LoadingState.Loading:
+        @LoadingTemplate
+        break;
+    case LoadingState.Error:
+        @ErrorTemplate
+        break;
+    case LoadingState.Success:
+        @SuccessTemplate
+        break;
+    default:
+        @SuccessTemplate
+        break;
+}
+
+@code {
+    [Parameter] public LoadingState State { get; set; }
+    [Parameter] public RenderFragment? LoadingTemplate { get; set; }
+    [Parameter] public RenderFragment? ErrorTemplate { get; set; }
+    [Parameter] public RenderFragment? SuccessTemplate { get; set; }
+}
