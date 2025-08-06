@@ -1,18 +1,21 @@
 ﻿using Microsoft.Playwright;
-using Microsoft.Playwright.MSTest;
 
 namespace BacktestStudio.Web.UITests;
 
 [TestClass]
-public class StrategiesPageTests : PageTest
+public class StrategiesPageTests : BasePageTest
 {
-    private const string BaseUrl = "http://localhost:5182";
-    
     [TestInitialize]
     public async Task Setup()
     {
-        await Page.GotoAsync($"{BaseUrl}/strategies");
-        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        await BaseSetup();
+        await NavigateToAsync("strategies");
+    }
+
+    [TestCleanup]
+    public async Task Cleanup()
+    {
+        await BaseCleanup();
     }
 
     [TestMethod]

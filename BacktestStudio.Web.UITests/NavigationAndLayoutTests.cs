@@ -1,21 +1,22 @@
 ﻿using Microsoft.Playwright;
-using Microsoft.Playwright.MSTest;
 
 namespace BacktestStudio.Web.UITests;
 
 [TestClass]
-public class NavigationAndLayoutTests : PageTest
+public class NavigationAndLayoutTests : BasePageTest
 {
-    private const string BaseUrl = "http://localhost:5182";
-    
     [TestInitialize]
     public async Task Setup()
     {
+        await BaseSetup();
         // 確保每個測試都從首頁開始
-        await Page.GotoAsync(BaseUrl);
-        
-        // 等待頁面完全載入
-        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        await NavigateToAsync("");
+    }
+
+    [TestCleanup]
+    public async Task Cleanup()
+    {
+        await BaseCleanup();
     }
 
     [TestMethod]
@@ -101,11 +102,11 @@ public class NavigationAndLayoutTests : PageTest
             await Expect(navbar).ToBeVisibleAsync();
             await Expect(navbar).ToContainTextAsync("BacktestStudio.Web");
             
-            // 檢查所有導航連結都存在
-            await Expect(Page.Locator("text=儀表板")).ToBeVisibleAsync();
-            await Expect(Page.Locator("text=策略管理")).ToBeVisibleAsync();
-            await Expect(Page.Locator("text=圖表分析")).ToBeVisibleAsync();
-            await Expect(Page.Locator("text=分析報表")).ToBeVisibleAsync();
+            // 檢查所有導航連結都存在 - 使用更精確的選擇器
+            await Expect(Page.Locator("nav a", new() { HasTextString = "儀表板" })).ToBeVisibleAsync();
+            await Expect(Page.Locator("nav a", new() { HasTextString = "策略管理" })).ToBeVisibleAsync();
+            await Expect(Page.Locator("nav a", new() { HasTextString = "圖表分析" })).ToBeVisibleAsync();
+            await Expect(Page.Locator("nav a", new() { HasTextString = "分析報表" })).ToBeVisibleAsync();
             
             // 檢查About連結存在
             var aboutLink = Page.Locator("a[href*='learn.microsoft.com']");

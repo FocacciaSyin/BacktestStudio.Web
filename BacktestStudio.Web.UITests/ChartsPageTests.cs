@@ -1,18 +1,19 @@
-﻿using Microsoft.Playwright;
-using Microsoft.Playwright.MSTest;
-
-namespace BacktestStudio.Web.UITests;
+﻿namespace BacktestStudio.Web.UITests;
 
 [TestClass]
-public class ChartsPageTests : PageTest
+public class ChartsPageTests : BasePageTest
 {
-    private const string BaseUrl = "http://localhost:5182";
-    
     [TestInitialize]
     public async Task Setup()
     {
-        await Page.GotoAsync($"{BaseUrl}/charts");
-        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        await BaseSetup();
+        await NavigateToAsync("charts");
+    }
+
+    [TestCleanup]
+    public async Task Cleanup()
+    {
+        await BaseCleanup();
     }
 
     [TestMethod]
@@ -45,16 +46,14 @@ public class ChartsPageTests : PageTest
         // 驗證技術指標設定區塊
         await Expect(Page.Locator("text=技術指標設定")).ToBeVisibleAsync();
         
-        // 驗證移動平均線選項
-        var ma5Checkbox = Page.Locator("input[type='checkbox']").First;
+        // 驗證移動平均線選項 - 使用更精確的选择器
+        var ma5Checkbox = Page.Locator("#ma5");
         await Expect(ma5Checkbox).ToBeCheckedAsync();
         await Expect(Page.Locator("text=MA5 (5日移動平均線)")).ToBeVisibleAsync();
-        
         await Expect(Page.Locator("text=MA10 (10日移動平均線)")).ToBeVisibleAsync();
         
-        var ma20Checkbox = Page.Locator("text=MA20 (20日移動平均線)").Locator("..").Locator("input");
+        var ma20Checkbox = Page.Locator("#ma20");
         await Expect(ma20Checkbox).ToBeCheckedAsync();
-        
         await Expect(Page.Locator("text=MA50 (50日移動平均線)")).ToBeVisibleAsync();
     }
 
@@ -91,8 +90,8 @@ public class ChartsPageTests : PageTest
     [TestMethod]
     public async Task ChartsPage_TechnicalIndicatorCheckboxes_ShouldBeInteractive()
     {
-        // 測試MA10複選框的互動性
-        var ma10Checkbox = Page.Locator("text=MA10 (10日移動平均線)").Locator("..").Locator("input");
+        // 測試MA10複選框的互動性 - 使用更精確的选择器
+        var ma10Checkbox = Page.Locator("#ma10");
         
         // 應該預設為未選中
         await Expect(ma10Checkbox).Not.ToBeCheckedAsync();

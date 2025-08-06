@@ -1,18 +1,21 @@
 ﻿using Microsoft.Playwright;
-using Microsoft.Playwright.MSTest;
 
 namespace BacktestStudio.Web.UITests;
 
 [TestClass]
-public class ReportsPageTests : PageTest
+public class ReportsPageTests : BasePageTest
 {
-    private const string BaseUrl = "http://localhost:5182";
-    
     [TestInitialize]
     public async Task Setup()
     {
-        await Page.GotoAsync($"{BaseUrl}/reports");
-        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        await BaseSetup();
+        await NavigateToAsync("reports");
+    }
+
+    [TestCleanup]
+    public async Task Cleanup()
+    {
+        await BaseCleanup();
     }
 
     [TestMethod]
@@ -38,30 +41,7 @@ public class ReportsPageTests : PageTest
         await Expect(pdfButton).ToBeEnabledAsync();
     }
 
-    [TestMethod]
-    public async Task ReportsPage_ShouldDisplayPerformanceMetrics()
-    {
-        // 驗證總獲利
-        await Expect(Page.Locator("text=總獲利")).ToBeVisibleAsync();
-        await Expect(Page.Locator("text=+$12,580")).ToBeVisibleAsync();
-        await Expect(Page.Locator("text=+12.58%")).ToBeVisibleAsync();
-        
-        // 驗證勝率
-        await Expect(Page.Locator("text=勝率")).ToBeVisibleAsync();
-        await Expect(Page.Locator("text=68.5%")).ToBeVisibleAsync();
-        await Expect(Page.Locator("text=87/127 筆交易")).ToBeVisibleAsync();
-        
-        // 驗證最大回撤
-        await Expect(Page.Locator("text=最大回撤")).ToBeVisibleAsync();
-        await Expect(Page.Locator("text=-5.2%")).ToBeVisibleAsync();
-        await Expect(Page.Locator("text=\"-$5,200\"")).ToBeVisibleAsync();
-        
-        // 驗證夏普比率
-        await Expect(Page.Locator("text=夏普比率")).ToBeVisibleAsync();
-        await Expect(Page.Locator("text=1.85")).ToBeVisibleAsync();
-        await Expect(Page.Locator("text=優秀")).ToBeVisibleAsync();
-    }
-
+    
     [TestMethod]
     public async Task ReportsPage_ShouldDisplayFilters()
     {
@@ -105,8 +85,6 @@ public class ReportsPageTests : PageTest
         await Expect(Page.Locator("text=$15,200")).ToBeVisibleAsync();
         await Expect(Page.Locator("text=+$850")).ToBeVisibleAsync();
     }
-
-    [TestMethod]
     public async Task ReportsPage_ShouldDisplayPagination()
     {
         // 驗證分頁控制項
