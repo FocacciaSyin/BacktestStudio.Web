@@ -7,4 +7,28 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
+    <ItemGroup>
+        <PackageReference Include="Blazor-ApexCharts" Version="6.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove=".taskmaster\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove=".taskmaster\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove=".taskmaster\**" />
+      <Content Remove=".mcp.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove=".taskmaster\**" />
+      <None Remove=".gitignore" />
+      <None Remove=".env.example" />
+      <None Remove="README.md" />
+    </ItemGroup>
+
 </Project>

@@ -1,10 +1,17 @@
 using BacktestStudio.Web.Components;
+using BacktestStudio.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// Register our services
+builder.Services.AddSingleton<AppState>();
+builder.Services.AddScoped<IApiService, MockApiService>();
+builder.Services.AddScoped<IChartService, ChartService>();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
