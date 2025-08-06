@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BacktestStudio.Web", "BacktestStudio.Web.csproj", "{4C303337-B34F-460F-8CFD-E4A7307E4940}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4C303337-B34F-460F-8CFD-E4A7307E4940}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C303337-B34F-460F-8CFD-E4A7307E4940}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C303337-B34F-460F-8CFD-E4A7307E4940}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C303337-B34F-460F-8CFD-E4A7307E4940}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
