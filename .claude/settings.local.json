@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(task-master init:*)",
+      "Bash(task-master:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(dotnet build)",
+      "Bash(rm:*)",
+      "Bash(dotnet run:*)",
+      "Bash(git add:*)",
+      "Bash(git rm:*)"
+    ],
+    "deny": []
+  }
+}
