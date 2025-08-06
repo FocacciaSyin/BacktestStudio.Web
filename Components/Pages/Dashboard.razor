@@ -1,0 +1,113 @@
+@page "/"
+@page "/dashboard"
+
+<PageTitle>儀表板 - BacktestStudio</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-4 mb-4">交易策略儀表板</h1>
+            <p class="lead text-muted">歡迎使用BacktestStudio - 您的策略回測分析平台</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h5><i class="bi bi-info-circle"></i> 系統狀態</h5>
+                <p class="mb-0">系統正常運行，準備開始您的策略分析</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- 快速統計卡片 -->
+        <div class="col-md-3">
+            <div class="data-card text-center">
+                <div class="data-card-body">
+                    <div class="stat-number text-primary">3</div>
+                    <div class="stat-label">策略數量</div>
+                    <div class="mt-2">
+                        <i class="bi bi-gear text-primary" style="font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="data-card text-center">
+                <div class="data-card-body">
+                    <div class="stat-number financial-number">127</div>
+                    <div class="stat-label">總交易次數</div>
+                    <div class="mt-2">
+                        <i class="bi bi-clipboard-data text-info" style="font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="data-card text-center">
+                <div class="data-card-body">
+                    <div class="stat-number financial-number text-gain">68%</div>
+                    <div class="stat-label">勝率</div>
+                    <div class="stat-change positive mt-1">+2.3%</div>
+                    <div class="mt-2">
+                        <i class="bi bi-percent text-gain" style="font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="data-card text-center">
+                <div class="data-card-body">
+                    <div class="stat-number financial-number text-gain">+12.5%</div>
+                    <div class="stat-label">總獲利</div>
+                    <div class="stat-change positive mt-1">+1.2%</div>
+                    <div class="mt-2">
+                        <i class="bi bi-currency-dollar text-gain" style="font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-speedometer2"></i> 快速開始</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="d-grid">
+                                <a href="/strategies" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-gear"></i> 管理策略
+                                </a>
+                            </div>
+                            <small class="text-muted d-block mt-2">建立、編輯和管理您的交易策略</small>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-grid">
+                                <a href="/charts" class="btn btn-success btn-lg">
+                                    <i class="bi bi-graph-up"></i> 查看圖表
+                                </a>
+                            </div>
+                            <small class="text-muted d-block mt-2">分析價格走勢和技術指標</small>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-grid">
+                                <a href="/reports" class="btn btn-info btn-lg">
+                                    <i class="bi bi-file-text"></i> 分析報表
+                                </a>
+                            </div>
+                            <small class="text-muted d-block mt-2">查看詳細的績效分析報告</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
