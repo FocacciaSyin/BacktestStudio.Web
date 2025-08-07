@@ -1,5 +1,6 @@
 using BacktestStudio.Web.Components;
 using BacktestStudio.Web.Services;
+using ApexCharts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,9 @@ builder.Services.AddSingleton<AppState>();
 builder.Services.AddScoped<IApiService, MockApiService>();
 builder.Services.AddScoped<IChartService, ChartService>();
 builder.Services.AddHttpClient();
+
+// Register ApexCharts
+builder.Services.AddApexCharts();
 
 var app = builder.Build();
 
