@@ -436,6 +436,8 @@ dev-debug.log
 # OS specific
 .DS_Store
 
+.fake
+
 # Task files
 # tasks.json
 # tasks/ 

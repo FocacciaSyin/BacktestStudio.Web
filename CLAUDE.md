@@ -21,7 +21,7 @@ BacktestStudio.Web is a Blazor Server application for stock market strategy back
 dotnet build
 
 # Run in development mode
-dotnet run
+dotnet watch run
 
 # Run with HTTPS (default profile)
 dotnet run --launch-profile https
