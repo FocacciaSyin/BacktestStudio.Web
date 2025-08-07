@@ -43,9 +43,20 @@ Components/
 │   ├── ChartService.cs           # 圖表資料處理服務
 │   ├── StrategyService.cs        # 策略管理服務
 │   └── NotificationService.cs    # 通知服務
-├── Models/
-│   ├── ViewModels/               # 檢視模型
-│   └── DTOs/                    # 資料傳輸物件
+├── Models/                       # 統一模型管理
+│   ├── Chart/                   # 圖表相關模型
+│   │   ├── ChartDataPoint.cs       # 統一的圖表數據點模型
+│   │   ├── CandlestickData.cs      # K線圖資料模型
+│   │   ├── ApexCandlestickSeries.cs # ApexCharts K線圖資料序列格式
+│   │   ├── ApexCandlestickDataPoint.cs # ApexCharts K線資料點
+│   │   └── ChartOptions.cs         # 圖表配置選項模型
+│   ├── DTOs/                    # 資料傳輸物件
+│   │   ├── MarketDataPoint.cs      # 市場數據點
+│   │   ├── TechnicalIndicatorData.cs # 技術指標數據
+│   │   ├── StrategyDto.cs          # 策略數據傳輸對象
+│   │   └── PerformanceMetrics.cs   # 績效指標
+│   └── ViewModels/              # 檢視模型
+│       └── DashboardViewModel.cs   # 主儀表板視圖模型
 └── wwwroot/
     ├── css/
     │   ├── app.css              # 全域樣式
@@ -384,6 +395,281 @@ public class AppState
 ## 8.1 開發優先順序 (原計劃)
 
 ## 9. 技術實作注意事項
+
+## 8.5 模型架構規範與實作狀況 (2025-08-07)
+
+### 8.5.1 模型統一管理策略
+
+#### 模型組織原則
+所有 Claude 產生的 Model 類別統一放在 `/Models` 資料夾底下，按照功能和用途分類組織，確保架構清晰和維護性。
+
+#### 已完成的模型重構
+```
+Models/Chart/                           # 圖表相關模型 (已完成重構)
+├── ChartDataPoint.cs                   # ✅ 統一的圖表數據點模型
+├── CandlestickData.cs                  # ✅ K線圖資料模型 (OHLCV)
+├── ApexCandlestickSeries.cs            # ✅ ApexCharts K線圖資料序列格式
+├── ApexCandlestickDataPoint.cs         # ✅ ApexCharts K線資料點
+└── ChartOptions.cs                     # ✅ 圖表配置選項模型
+```
+
+#### 現有模型結構
+```
+Models/DTOs/                            # 數據傳輸對象
+├── MarketDataPoint.cs                  # ✅ 市場數據點
+├── TechnicalIndicatorData.cs           # ✅ 技術指標數據
+├── StrategyDto.cs                      # ✅ 策略數據傳輸對象  
+└── PerformanceMetrics.cs              # ✅ 績效指標
+
+Models/ViewModels/                      # 檢視模型
+└── DashboardViewModel.cs              # ✅ 主儀表板視圖模型
+```
+
+### 8.5.2 模型設計規範 (已實施)
+
+#### 核心原則
+- **單一職責**: 每個模型類別只負責一個特定的數據結構
+- **完整文檔**: 每個類別和欄位都必須有詳細的XML註解
+- **統一命名**: 使用描述性的類別和屬性命名  
+- **獨立文件**: 每個類別使用獨立的 .cs 文件
+
+#### 命名慣例 (已標準化)
+- **模型類別**: 使用描述性名稱，例如 `ChartDataPoint`, `CandlestickData`
+- **檔案命名**: 每個類別一個檔案，檔案名稱與類別名稱相同
+- **命名空間**: 統一使用 `BacktestStudio.Web.Models.Chart` 等分類命名空間
+
+#### XML 註解標準 (已實施)
+每個模型都包含完整的XML註解：
+```csharp
+/// <summary>
+/// K線圖資料模型
+/// </summary>
+public class CandlestickData
+{
+    /// <summary>
+    /// 交易日期
+    /// </summary>
+    public DateTime Date { get; set; }
+
+    /// <summary>
+    /// 開盤價
+    /// </summary>
+    public decimal Open { get; set; }
+    
+    // ... 其他欄位皆有詳細註解
+}
+```
+
+### 8.5.3 重構成果與驗證
+
+#### 完成的重構工作
+✅ **模型拆分**: 將 `CandlestickData.cs` 中的4個類別拆分成獨立文件  
+✅ **詳細註解**: 為所有類別和欄位補上完整的XML註解  
+✅ **內嵌類別遷移**: 將 `TradingChart.razor` 中的 `ChartDataPoint` 移至獨立模型文件  
+✅ **引用更新**: 在相關元件中添加正確的 `@using` 指令  
+✅ **編譯驗證**: 確認所有引用正確，無編譯錯誤  
+
+#### 模型文件詳細內容
+
+**ChartDataPoint.cs**:
+```csharp
+/// <summary>
+/// 統一的圖表數據點模型
+/// </summary>
+public class ChartDataPoint
+{
+    /// <summary>
+    /// X軸數值（通常為時間戳）
+    /// </summary>
+    public decimal X { get; set; }
+
+    /// <summary>
+    /// Y軸數值（價格或指標值）
+    /// </summary>
+    public decimal Y { get; set; }
+}
+```
+
+**CandlestickData.cs**:
+```csharp
+/// <summary>
+/// K線圖資料模型
+/// </summary>
+public class CandlestickData
+{
+    /// <summary>
+    /// 交易日期
+    /// </summary>
+    public DateTime Date { get; set; }
+
+    /// <summary>
+    /// 開盤價
+    /// </summary>
+    public decimal Open { get; set; }
+
+    /// <summary>
+    /// 最高價
+    /// </summary>
+    public decimal High { get; set; }
+
+    /// <summary>
+    /// 最低價
+    /// </summary>
+    public decimal Low { get; set; }
+
+    /// <summary>
+    /// 收盤價
+    /// </summary>
+    public decimal Close { get; set; }
+
+    /// <summary>
+    /// 成交量
+    /// </summary>
+    public long Volume { get; set; }
+}
+```
+
+**ApexCandlestickSeries.cs**:
+```csharp
+/// <summary>
+/// ApexCharts K線圖資料序列格式
+/// </summary>
+public class ApexCandlestickSeries
+{
+    /// <summary>
+    /// 序列名稱，用於圖表圖例顯示
+    /// </summary>
+    public string Name { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 圖表資料陣列，包含K線資料點
+    /// </summary>
+    public object[] Data { get; set; } = Array.Empty<object>();
+}
+```
+
+**ApexCandlestickDataPoint.cs**:
+```csharp
+/// <summary>
+/// ApexCharts K線資料點模型
+/// </summary>
+public class ApexCandlestickDataPoint
+{
+    /// <summary>
+    /// X軸時間戳（Unix毫秒時間戳）
+    /// </summary>
+    public long X { get; set; }
+
+    /// <summary>
+    /// Y軸OHLC價格陣列，順序為 [開盤價, 最高價, 最低價, 收盤價]
+    /// </summary>
+    public decimal[] Y { get; set; } = new decimal[4];
+}
+```
+
+**ChartOptions.cs**:
+```csharp
+/// <summary>
+/// 圖表配置選項模型
+/// </summary>
+public class ChartOptions
+{
+    /// <summary>
+    /// 圖表主題，支援 "light" 或 "dark"
+    /// </summary>
+    public string Theme { get; set; } = "light";
+
+    /// <summary>
+    /// 是否顯示圖表工具列
+    /// </summary>
+    public bool ShowToolbar { get; set; } = true;
+
+    /// <summary>
+    /// 是否顯示圖表網格線
+    /// </summary>
+    public bool ShowGrid { get; set; } = true;
+
+    /// <summary>
+    /// 圖表顏色配置陣列，預設為綠色（上漲）和紅色（下跌）
+    /// </summary>
+    public string[] Colors { get; set; } = { "#00E396", "#FF4560" };
+}
+```
+
+### 8.5.4 模型使用範例
+
+在 `TradingChart.razor` 中的正確使用方式：
+```razor
+@inject IChartService ChartService
+@using BacktestStudio.Web.Models.Chart
+
+<ApexChart TItem="ChartDataPoint"
+           Options="@_chartOptions"
+           @ref="_chart"
+           Height="@Height">
+
+    <ApexPointSeries TItem="ChartDataPoint"
+                     Items="@_chartDataPoints"
+                     Name="價格"
+                     SeriesType="SeriesType.Line"
+                     XValue="@((item) => item.X)"
+                     YValue="@((item) => item.Y)"/>
+</ApexChart>
+
+@code {
+    private List<ChartDataPoint> _chartDataPoints = new();
+    
+    // 資料轉換範例
+    _chartDataPoints = ChartData.PriceData.Select(item => new ChartDataPoint
+    {
+        X = (decimal)new DateTimeOffset(item.Date).ToUnixTimeMilliseconds(),
+        Y = item.Close
+    }).ToList();
+}
+```
+
+### 8.5.5 品質保證與驗證
+
+#### 編譯驗證
+✅ 所有模型檔案編譯成功，無警告或錯誤  
+✅ 命名空間引用正確，無重複定義  
+✅ XML註解格式正確，支援智能感知  
+
+#### 結構驗證
+✅ 檔案結構清晰，每個模型職責單一  
+✅ 模型間依賴關係明確  
+✅ 符合 DRY (Don't Repeat Yourself) 原則  
+
+### 8.5.6 未來擴展規劃
+
+#### 待新增模型分類
+```
+Models/Enums/                           # 列舉類型統一管理 (規劃中)
+├── ChartEnums.cs                       # 圖表相關列舉
+├── StrategyEnums.cs                    # 策略相關列舉
+├── TradeEnums.cs                       # 交易相關列舉
+└── CommonEnums.cs                      # 通用列舉
+
+Models/Interfaces/                      # 模型介面 (規劃中)  
+├── IChartData.cs                       # 圖表數據介面
+├── IMarketData.cs                      # 市場數據介面
+└── IPerformanceData.cs                 # 績效數據介面
+
+Models/Extensions/                      # 模型擴展方法 (規劃中)
+├── ChartExtensions.cs                  # 圖表模型擴展
+├── DataExtensions.cs                   # 數據模型擴展
+└── ValidationExtensions.cs             # 驗證擴展方法
+```
+
+#### 開發規範檢查清單
+在新增任何模型時，開發者需要確認：
+- [ ] 模型放置在正確的資料夾分類
+- [ ] 使用適當的命名空間
+- [ ] 遵循命名慣例 (PascalCase)
+- [ ] 添加完整的XML註解 (類別和所有公開成員)
+- [ ] 考慮是否需要介面或繼承
+- [ ] 使用獨立的.cs文件
+- [ ] 編譯無警告或錯誤
 
 ### 9.1 ApexCharts.NET 整合
 - 正確的資料格式轉換
