@@ -8,8 +8,8 @@ public class AppState
     public StrategyDto? SelectedStrategy { get; private set; }
     public DateRange TimeRange { get; private set; } = new()
     {
-        StartDate = DateTime.Now.AddYears(-1),
-        EndDate = DateTime.Now
+        Start = DateTime.Now.AddYears(-1),
+        End = DateTime.Now
     };
     public List<TechnicalIndicatorType> EnabledIndicators { get; private set; } = new();
     public LoadingState LoadingState { get; private set; } = LoadingState.Idle;

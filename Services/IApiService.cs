@@ -76,7 +76,7 @@ public class MockApiService : IApiService
         var random = new Random();
         var currentPrice = 15000m;
         
-        for (var date = range.StartDate; date <= range.EndDate; date = date.AddDays(1))
+        for (var date = range.Start; date <= range.End; date = date.AddDays(1))
         {
             if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
                 continue;
@@ -156,9 +156,9 @@ public class MockApiService : IApiService
         
         if (strategy == null) return trades;
         
-        var currentDate = range.StartDate.AddDays(random.Next(10, 50));
+        var currentDate = range.Start.AddDays(random.Next(10, 50));
         
-        while (currentDate <= range.EndDate.AddDays(-10))
+        while (currentDate <= range.End.AddDays(-10))
         {
             if (currentDate.DayOfWeek != DayOfWeek.Saturday && currentDate.DayOfWeek != DayOfWeek.Sunday)
             {
@@ -174,7 +174,7 @@ public class MockApiService : IApiService
                 
                 // Add corresponding sell trade
                 var sellDate = currentDate.AddDays(random.Next(1, 15));
-                if (sellDate <= range.EndDate)
+                if (sellDate <= range.End)
                 {
                     trades.Add(new TradePoint
                     {

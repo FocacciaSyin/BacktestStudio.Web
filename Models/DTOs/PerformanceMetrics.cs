@@ -21,8 +21,18 @@ public class ChartData
     public List<TradePoint> TradeMarkers { get; set; } = new();
 }
 
+/// <summary>
+/// 日期範圍
+/// </summary>
 public class DateRange
 {
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
+    /// <summary>
+    /// 開始日期
+    /// </summary>
+    public DateTime Start { get; set; }
+    
+    /// <summary>
+    /// 結束日期
+    /// </summary>
+    public DateTime End { get; set; }
 }

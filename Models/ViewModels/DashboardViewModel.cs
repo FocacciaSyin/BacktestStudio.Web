@@ -10,8 +10,8 @@ public class DashboardViewModel
     public PerformanceMetrics? Performance { get; set; }
     public DateRange TimeRange { get; set; } = new()
     {
-        StartDate = DateTime.Now.AddYears(-1),
-        EndDate = DateTime.Now
+        Start = DateTime.Now.AddYears(-1),
+        End = DateTime.Now
     };
     public LoadingState LoadingState { get; set; } = LoadingState.Idle;
     public string? ErrorMessage { get; set; }
