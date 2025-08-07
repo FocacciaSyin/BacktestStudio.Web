@@ -1,9 +1,14 @@
-﻿using BacktestStudio.Web.Models.Chart;
+ using BacktestStudio.Web.Models.Chart;
+using BacktestStudio.Web.Models.DTOs;
+using BacktestStudio.Web.Models.ViewModels;
+using ChartData = BacktestStudio.Web.Models.DTOs.ChartData;
+using DateRange = BacktestStudio.Web.Models.DTOs.DateRange;
+using TechnicalIndicatorType = BacktestStudio.Web.Models.ViewModels.TechnicalIndicatorType;
 
 namespace BacktestStudio.Web.Services;
 
 /// <summary>
-/// 图表服务实现
+/// 圖表服務實作
 /// </summary>
 public class ChartService : IChartService
 {
@@ -81,7 +86,7 @@ public class ChartService : IChartService
     }
     
     /// <summary>
-    /// 计算技术指标数据
+    /// 計算技術指標資料
     /// </summary>
     public object CalculateTechnicalIndicators(IEnumerable<CandlestickData> data, string indicatorType)
     {
@@ -93,8 +98,94 @@ public class ChartService : IChartService
             "MA10" => CalculateMovingAverage(dataList, 10),
             "MA20" => CalculateMovingAverage(dataList, 20),
             "RSI" => CalculateRSI(dataList, 14),
-            _ => null
+            _ => new List<object>()
         };
+    }
+
+    /// <summary>
+    /// 準備圖表數據
+    /// </summary>
+    public async Task<ChartData> PrepareChartDataAsync(DateRange range, int? strategyId = null)
+    {
+        var chartData = new ChartData();
+
+        // 獲取市場數據
+        chartData.PriceData = await _apiService.GetMarketDataAsync(range);
+
+        // 獲取技術指標
+        chartData.IndicatorData = await _apiService.GetTechnicalIndicatorsAsync(range);
+
+        // 如果指定了策略，獲取交易標記
+        if (strategyId.HasValue)
+        {
+            chartData.TradeMarkers = await _apiService.GetTradePointsAsync(strategyId.Value, range);
+        }
+
+        return chartData;
+    }
+
+    /// <summary>
+    /// 將市場數據轉換為 ApexChart 格式
+    /// </summary>
+    public List<object> ConvertToApexChartData(List<MarketDataPoint> data)
+    {
+        return data.Select(item => new object[]
+        {
+            new DateTimeOffset(item.Date).ToUnixTimeMilliseconds(),
+            new[] { item.Open, item.High, item.Low, item.Close }
+        }).Cast<object>().ToList();
+    }
+
+    /// <summary>
+    /// 將技術指標轉換為 ApexChart 格式
+    /// </summary>
+    public List<object> ConvertIndicatorsToApexData(List<TechnicalIndicatorData> indicators, TechnicalIndicatorType type)
+    {
+        return indicators.Select(item =>
+        {
+            decimal? value = type switch
+            {
+                TechnicalIndicatorType.MA5 => item.MA5,
+                TechnicalIndicatorType.MA10 => item.MA10,
+                TechnicalIndicatorType.MA20 => item.MA20,
+                TechnicalIndicatorType.MA50 => item.MA50,
+                _ => null
+            };
+
+            return new object[]
+            {
+                new DateTimeOffset(item.Date).ToUnixTimeMilliseconds(),
+                value ?? 0m
+            };
+        }).Cast<object>().ToList();
+    }
+
+    /// <summary>
+    /// 將交易點轉換為注釋格式
+    /// </summary>
+    public List<object> ConvertTradesToAnnotations(List<TradePoint> trades)
+    {
+        return trades.Select(trade => new
+        {
+            x = new DateTimeOffset(trade.Date).ToUnixTimeMilliseconds(),
+            y = trade.Price,
+            marker = new
+            {
+                size = 6,
+                fillColor = trade.TradeType == TradeType.Buy ? "#00E396" : "#FF4560",
+                strokeColor = "#fff",
+                strokeWidth = 2
+            },
+            label = new
+            {
+                text = trade.TradeType == TradeType.Buy ? "B" : "S",
+                style = new
+                {
+                    color = "#fff",
+                    fontSize = "10px"
+                }
+            }
+        }).Cast<object>().ToList();
     }
 
     private List<object> CalculateMovingAverage(List<CandlestickData> data, int period)

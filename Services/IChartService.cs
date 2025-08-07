@@ -1,96 +1,54 @@
+using BacktestStudio.Web.Models.Chart;
 using BacktestStudio.Web.Models.DTOs;
 using BacktestStudio.Web.Models.ViewModels;
+using ChartData = BacktestStudio.Web.Models.DTOs.ChartData;
+using DateRange = BacktestStudio.Web.Models.DTOs.DateRange;
+using TechnicalIndicatorType = BacktestStudio.Web.Models.ViewModels.TechnicalIndicatorType;
 
 namespace BacktestStudio.Web.Services;
 
+/// <summary>
+/// 图表服务接口
+/// </summary>
 public interface IChartService
 {
+    /// <summary>
+    /// 将 K线数据转换为 ApexCharts 格式
+    /// </summary>
+    ApexCandlestickSeries ConvertToApexFormat(IEnumerable<CandlestickData> data);
+    
+    /// <summary>
+    /// 获取默认图表配置
+    /// </summary>
+    ChartOptions GetDefaultChartOptions();
+    
+    /// <summary>
+    /// 获取模拟交易数据
+    /// </summary>
+    Task<IEnumerable<CandlestickData>> GetMockTradingDataAsync();
+    
+    /// <summary>
+    /// 计算技术指标数据
+    /// </summary>
+    object CalculateTechnicalIndicators(IEnumerable<CandlestickData> data, string indicatorType);
+    
+    /// <summary>
+    /// 准备图表数据
+    /// </summary>
     Task<ChartData> PrepareChartDataAsync(DateRange range, int? strategyId = null);
+    
+    /// <summary>
+    /// 将市场数据转换为 ApexChart 格式
+    /// </summary>
     List<object> ConvertToApexChartData(List<MarketDataPoint> data);
+    
+    /// <summary>
+    /// 将技术指标转换为 ApexChart 格式
+    /// </summary>
     List<object> ConvertIndicatorsToApexData(List<TechnicalIndicatorData> indicators, TechnicalIndicatorType type);
+    
+    /// <summary>
+    /// 将交易点转换为注释格式
+    /// </summary>
     List<object> ConvertTradesToAnnotations(List<TradePoint> trades);
-}
-
-public class ChartService : IChartService
-{
-    private readonly IApiService _apiService;
-
-    public ChartService(IApiService apiService)
-    {
-        _apiService = apiService;
-    }
-
-    public async Task<ChartData> PrepareChartDataAsync(DateRange range, int? strategyId = null)
-    {
-        var chartData = new ChartData();
-
-        // Get market data
-        chartData.PriceData = await _apiService.GetMarketDataAsync(range);
-
-        // Get technical indicators
-        chartData.IndicatorData = await _apiService.GetTechnicalIndicatorsAsync(range);
-
-        // Get trade markers if strategy is specified
-        if (strategyId.HasValue)
-        {
-            chartData.TradeMarkers = await _apiService.GetTradePointsAsync(strategyId.Value, range);
-        }
-
-        return chartData;
-    }
-
-    public List<object> ConvertToApexChartData(List<MarketDataPoint> data)
-    {
-        return data.Select(item => new object[]
-        {
-            new DateTimeOffset(item.Date).ToUnixTimeMilliseconds(),
-            new[] { item.Open, item.High, item.Low, item.Close }
-        }).Cast<object>().ToList();
-    }
-
-    public List<object> ConvertIndicatorsToApexData(List<TechnicalIndicatorData> indicators, TechnicalIndicatorType type)
-    {
-        return indicators.Select(item =>
-        {
-            decimal? value = type switch
-            {
-                TechnicalIndicatorType.MA5 => item.MA5,
-                TechnicalIndicatorType.MA10 => item.MA10,
-                TechnicalIndicatorType.MA20 => item.MA20,
-                TechnicalIndicatorType.MA50 => item.MA50,
-                _ => null
-            };
-
-            return new object[]
-            {
-                new DateTimeOffset(item.Date).ToUnixTimeMilliseconds(),
-                value
-            };
-        }).Cast<object>().ToList();
-    }
-
-    public List<object> ConvertTradesToAnnotations(List<TradePoint> trades)
-    {
-        return trades.Select(trade => new
-        {
-            x = new DateTimeOffset(trade.Date).ToUnixTimeMilliseconds(),
-            y = trade.Price,
-            marker = new
-            {
-                size = 6,
-                fillColor = trade.TradeType == TradeType.Buy ? "#00E396" : "#FF4560",
-                strokeColor = "#fff",
-                strokeWidth = 2
-            },
-            label = new
-            {
-                text = trade.TradeType == TradeType.Buy ? "B" : "S",
-                style = new
-                {
-                    color = "#fff",
-                    fontSize = "10px"
-                }
-            }
-        }).Cast<object>().ToList();
-    }
 }
