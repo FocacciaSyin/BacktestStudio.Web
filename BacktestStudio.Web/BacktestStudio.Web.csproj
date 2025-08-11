@@ -11,4 +11,12 @@
         <PackageReference Include="Blazor-ApexCharts" Version="6.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Chart\TradingChart.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BacktestStudio.Service\BacktestStudio.Service.csproj" />
+    </ItemGroup>
+
 </Project>

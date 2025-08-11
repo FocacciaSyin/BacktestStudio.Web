@@ -1,6 +1,10 @@
 using BacktestStudio.Web.Components;
 using BacktestStudio.Web.Services;
 using ApexCharts;
+using BacktestStudio.Repository;
+using BacktestStudio.Repository.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +20,12 @@ builder.Services.AddHttpClient();
 
 // Register ApexCharts
 builder.Services.AddApexCharts();
+
+builder.Services.AddDbContext<BackestStudioContext>(options =>
+{
+    var connectionString = builder.Configuration.GetSection("ConnectionStrings:DefaultConnection").Value;
+    options.UseSqlite(connectionString);
+});
 
 var app = builder.Build();
 
