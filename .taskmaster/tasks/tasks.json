@@ -314,7 +314,7 @@
         "description": "建立買入點位管理頁面，支援基本買入記錄的新增、編輯、刪除功能和簡易損益計算",
         "details": "1. 建立 PurchasePoints.razor 主頁面，實作買入點位列表顯示\n2. 實作 PurchaseRecordForm.razor 表單元件，包含買入日期、價格、數量基本欄位\n3. 建立 PurchaseRecord 資料模型類別，包含 Id、Date、Price、Quantity 基本屬性\n4. 實作 PurchaseRecordService 服務類別，提供記憶體內 CRUD 操作\n5. 建立簡易損益計算功能：(當前價格 - 買入價格) × 買入數量\n6. 實作 PurchaseRecordTable.razor 表格元件，支援基本列表顯示\n7. 建立新增/編輯表單，使用簡單的 Blazor EditForm\n8. 實作刪除確認功能\n9. 建立損益摘要卡片，顯示總投入金額和總獲利/虧損",
         "testStrategy": "基本 CRUD 操作測試，表單輸入驗證測試，損益計算邏輯測試，基本 UI 功能測試",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           3
         ],
@@ -325,8 +325,8 @@
             "title": "建立基本買入記錄資料模型和服務類別",
             "description": "建立 PurchaseRecord 資料模型和 PurchaseRecordService 服務類別，提供記憶體內的基本 CRUD 操作功能",
             "dependencies": [],
-            "details": "1. 建立 Models/PurchaseRecord.cs 資料模型，包含 Id(int)、Date(DateTime)、Price(decimal)、Quantity(int) 屬性\n2. 建立 Services/PurchaseRecordService.cs 服務類別，使用 List<PurchaseRecord> 作為記憶體儲存\n3. 實作基本 CRUD 方法：GetAll()、GetById()、Add()、Update()、Delete()\n4. 在 Program.cs 註冊服務為 Singleton\n5. 加入基本資料驗證邏輯",
-            "status": "pending",
+            "details": "1. 建立 Models/PurchaseRecord.cs 資料模型，包含 Id(int)、Date(DateTime)、Price(decimal)、Quantity(int) 屬性\n2. 建立 Services/PurchaseRecordService.cs 服務類別，使用 List<PurchaseRecord> 作為記憶體儲存\n3. 實作基本 CRUD 方法：GetAll()、GetById()、Add()、Update()、Delete()\n4. 在 Program.cs 註冊服務為 Singleton\n5. 加入基本資料驗證邏輯\n<info added on 2025-08-11T16:52:31.234Z>\nSQLite 資料庫架構已完成：建立 PurchaseRecords 表包含 Id(主鍵)、Date、Price、Quantity、Symbol 欄位，加入價格數量檢查約束和索引優化，實作自動時間戳記觸發器。資料庫結構已支援 CRUD 操作和損益計算功能。需要更新 PurchaseRecord.cs 模型加入 Symbol 屬性，並將 PurchaseRecordService.cs 從記憶體儲存改為 Entity Framework Core 實作。\n</info added on 2025-08-11T16:52:31.234Z>\n<info added on 2025-08-11T16:56:01.385Z>\nService 層實作完成：\n1. IPurchaseRecordService 和 PurchaseRecordService 提供完整 CRUD 操作與統計計算功能（總投入金額、總持有數量、平均買入價格）\n2. IProfitLossService 和 ProfitLossService 實作損益計算邏輯，包含單筆損益、總損益、損益百分比、當前市值和 ProfitLossSummary 摘要功能\n3. 所有服務使用 Entity Framework Core 與 SQLite 資料庫整合，支援非同步操作\n4. 包含完整的參數驗證和錯誤處理機制\n資料層和服務層開發完畢，已準備進行 UI 層開發。\n</info added on 2025-08-11T16:56:01.385Z>\n<info added on 2025-08-11T16:59:17.072Z>\n為 Service 層 XML 文件註解補充任務：\n1. IPurchaseRecordService.cs：為所有介面方法（GetAllAsync、GetByIdAsync、AddAsync、UpdateAsync、DeleteAsync、GetTotalInvestmentAsync、GetTotalQuantityAsync、GetAveragePriceAsync）補上完整 XML 註解，包含方法目的說明、參數描述、回傳值說明和可能的例外狀況\n2. PurchaseRecordService.cs：為實作類別的所有公開方法補上實作細節說明，包含資料驗證邏輯、Entity Framework 操作流程和錯誤處理機制\n3. IProfitLossService.cs：為損益計算相關方法（CalculateProfitLossAsync、CalculateTotalProfitLossAsync、GetProfitLossPercentageAsync、CalculateCurrentMarketValueAsync、GetProfitLossSummaryAsync）補上詳細註解，說明計算邏輯和參數要求\n4. ProfitLossService.cs：為實作方法補上損益計算公式說明、市場價格處理邏輯和統計摘要建構過程\n5. 確保所有公開類別、屬性和方法都符合 C# XML 文件註解標準，提供清楚的 IntelliSense 支援和 API 文件生成功能\n</info added on 2025-08-11T16:59:17.072Z>\n<info added on 2025-08-11T17:02:20.866Z>\nXML 文件註解實作全面完成：IPurchaseRecordService.cs 和 PurchaseRecordService.cs 已補上完整的 <summary>、<param>、<returns>、<exception> 標籤，涵蓋所有介面方法和實作細節。註解內容包含 CRUD 操作說明、Entity Framework 整合流程、資料驗證機制、加權平均計算公式和錯誤處理說明。所有註解符合 C# XML 文件標準，提供完整 IntelliSense 支援和 API 文件生成功能。Service 層文件化工作完成，代碼可讀性和維護性大幅提升，子任務 11.1 完全達成。\n</info added on 2025-08-11T17:02:20.866Z>",
+            "status": "done",
             "testStrategy": "測試資料模型屬性設定、服務類別 CRUD 操作、記憶體資料一致性"
           },
           {
@@ -356,7 +356,7 @@
     ],
     "metadata": {
       "created": "2025-08-06T14:29:34.738Z",
-      "updated": "2025-08-11T16:05:46.459Z",
+      "updated": "2025-08-11T17:02:32.970Z",
       "description": "Tasks for frontend context"
     }
   }
