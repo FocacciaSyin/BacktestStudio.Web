@@ -337,7 +337,7 @@
               "1"
             ],
             "details": "1. 建立 Components/Pages/PurchasePoints.razor 主頁面，使用 @page \"/purchase-points\" 路由\n2. 建立 Components/PurchaseRecordForm.razor 表單元件，使用 Blazor EditForm\n3. 表單包含買入日期、價格、數量三個基本欄位\n4. 實作表單驗證：價格和數量必須大於 0，日期不能未來\n5. 實作新增和編輯模式切換\n6. 加入簡單的 Bootstrap 樣式",
-            "status": "pending",
+            "status": "in-progress",
             "testStrategy": "測試頁面路由、表單輸入驗證、新增編輯模式切換、基本 UI 顯示"
           },
           {
@@ -356,7 +356,7 @@
     ],
     "metadata": {
       "created": "2025-08-06T14:29:34.738Z",
-      "updated": "2025-08-11T17:02:32.970Z",
+      "updated": "2025-08-13T15:24:43.429Z",
       "description": "Tasks for frontend context"
     }
   }

@@ -5,6 +5,7 @@ using BacktestStudio.Repository;
 using BacktestStudio.Repository.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using BacktestStudio.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +13,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+
 // Register our services
 builder.Services.AddSingleton<AppState>();
 builder.Services.AddScoped<IApiService, MockApiService>();
 builder.Services.AddScoped<IChartService, ChartService>();
+builder.Services.AddScoped<IPurchaseRecordService, PurchaseRecordService>();
 builder.Services.AddHttpClient();
 
 // Register ApexCharts

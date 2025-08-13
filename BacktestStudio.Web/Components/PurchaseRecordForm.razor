@@ -1,0 +1,59 @@
+@using BacktestStudio.Service.Dtos
+@using System.ComponentModel.DataAnnotations
+
+<EditForm Model="record" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label class="form-label">買入日期</label>
+        <InputDate @bind-Value="record.Date" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">價格</label>
+        <InputNumber @bind-Value="record.Price" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">數量</label>
+        <InputNumber @bind-Value="record.Quantity" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">@((IsEditMode ? "儲存" : "新增"))</button>
+    <button type="button" class="btn btn-secondary ms-2" @onclick="OnCancel">取消</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public PurchaseRecordDto? Record { get; set; }
+    [Parameter]
+    public EventCallback<PurchaseRecordDto> OnSaved { get; set; }
+    [Parameter]
+    public EventCallback OnCancelled { get; set; }
+
+    private PurchaseRecordDto record = new();
+    private bool IsEditMode => Record != null;
+
+    protected override void OnParametersSet()
+    {
+        if (Record != null)
+            record = new PurchaseRecordDto
+            {
+                Id = Record.Id,
+                Date = Record.Date,
+                Price = Record.Price,
+                Quantity = Record.Quantity
+            };
+        else
+            record = new PurchaseRecordDto();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (record.Price <= 0 || record.Quantity <= 0 || record.Date > DateTime.Today)
+            return;
+        await OnSaved.InvokeAsync(record);
+    }
+
+    private async Task OnCancel()
+    {
+        await OnCancelled.InvokeAsync();
+    }
+}

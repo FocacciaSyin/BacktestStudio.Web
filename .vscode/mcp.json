@@ -18,15 +18,6 @@
         "OLLAMA_API_KEY": "YOUR_OLLAMA_API_KEY_HERE"
       },
       "type": "stdio"
-    },
-    "context7": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp@latest"
-      ],
-      "gallery": true
     }
   }
 }

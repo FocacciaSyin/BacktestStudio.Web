@@ -1,0 +1,141 @@
+
+@page "/purchase-points"
+@using BacktestStudio.Service.Dtos
+@using BacktestStudio.Service
+
+<PageTitle>買入點位管理</PageTitle>
+
+<div class="container mt-4">
+    <h2>買入點位管理</h2>
+
+    <button class="btn btn-success mb-3" @onclick="ShowAddForm">新增買入記錄</button>
+
+    @if (showForm)
+    {
+        <PurchaseRecordForm Record="selectedRecord" OnSaved="EventCallback.Factory.Create<PurchaseRecordDto>(this, OnRecordSaved)" OnCancelled="EventCallback.Factory.Create(this, OnFormCancelled)" />
+    }
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>日期</th>
+                <th>價格</th>
+                <th>數量</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (records == null)
+            {
+                <tr><td colspan="4">載入中...</td></tr>
+            }
+            else if (!records.Any())
+            {
+                <tr><td colspan="4">尚無資料</td></tr>
+            }
+            else
+            {
+                @foreach (var rec in records)
+                {
+                    <tr>
+                        <td>@rec.Date.ToString("yyyy-MM-dd")</td>
+                        <td>@rec.Price</td>
+                        <td>@rec.Quantity</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary me-2" @onclick="() => EditRecord(rec)">編輯</button>
+                            <button class="btn btn-sm btn-danger" @onclick="() => DeleteRecord(rec.Id)">刪除</button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Inject]
+    private IPurchaseRecordService PurchaseRecordService { get; set; } = default!;
+
+    private List<PurchaseRecordDto>? records;
+    private PurchaseRecordDto? selectedRecord;
+    private bool showForm = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRecords();
+    }
+
+    private async Task LoadRecords()
+    {
+        var data = await PurchaseRecordService.GetAllAsync();
+        records = data.Select(x => new PurchaseRecordDto
+        {
+            Id = x.Id,
+            Date = x.Date,
+            Price = x.Price,
+            Quantity = x.Quantity
+        }).ToList();
+    }
+
+    private void ShowAddForm()
+    {
+        selectedRecord = null;
+        showForm = true;
+    }
+
+    private void EditRecord(PurchaseRecordDto rec)
+    {
+        selectedRecord = new PurchaseRecordDto
+        {
+            Id = rec.Id,
+            Date = rec.Date,
+            Price = rec.Price,
+            Quantity = rec.Quantity
+        };
+        showForm = true;
+    }
+
+    private async Task DeleteRecord(int id)
+    {
+        await PurchaseRecordService.DeleteAsync(id);
+        await LoadRecords();
+        StateHasChanged();
+    }
+
+    private async Task OnRecordSaved(PurchaseRecordDto record)
+    {
+        if (record.Id == 0)
+        {
+            // 新增
+            await PurchaseRecordService.AddAsync(new Repository.Models.PurchaseRecord
+            {
+                Date = record.Date,
+                Price = record.Price,
+                Quantity = record.Quantity,
+                Symbol = "" // 可擴充
+            });
+        }
+        else
+        {
+            // 編輯
+            await PurchaseRecordService.UpdateAsync(new Repository.Models.PurchaseRecord
+            {
+                Id = record.Id,
+                Date = record.Date,
+                Price = record.Price,
+                Quantity = record.Quantity,
+                Symbol = ""
+            });
+        }
+        showForm = false;
+        selectedRecord = null;
+        await LoadRecords();
+        StateHasChanged();
+    }
+
+    private void OnFormCancelled()
+    {
+        showForm = false;
+        selectedRecord = null;
+    }
+}
