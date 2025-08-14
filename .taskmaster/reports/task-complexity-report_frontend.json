@@ -1,21 +1,29 @@
 {
 	"meta": {
-		"generatedAt": "2025-08-07T15:49:31.787Z",
+		"generatedAt": "2025-08-14T06:56:33.474Z",
 		"tasksAnalyzed": 1,
-		"totalTasks": 10,
-		"analysisCount": 1,
+		"totalTasks": 12,
+		"analysisCount": 2,
 		"thresholdScore": 5,
 		"projectName": "Taskmaster",
 		"usedResearch": false
 	},
 	"complexityAnalysis": [
 		{
-			"taskId": 5,
-			"taskTitle": "完成 ApexCharts.NET 整合配置",
-			"complexityScore": 7,
+			"taskId": 11,
+			"taskTitle": "建立買入點位編輯功能",
+			"complexityScore": 6,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "將任務 11.3 的記錄列表顯示和損益計算功能進一步拆分為更具體的實作子任務。同時針對新增的欄位擴展需求（StopLossPrice、ProfitAmount、SettlementDate）建立獨立的實作子任務，包含資料模型更新、Entity Framework 遷移、表單元件修改和 UI 響應式設計調整。",
+			"reasoning": "基於代碼分析發現：1）SQLite 資料庫和 Entity Framework 已建立完整架構；2）服務層已實作完善的 CRUD 和損益計算功能；3）表單和對話框元件已完成；4）子任務 11.1 和 11.2 已完成，但 11.3 仍為 pending 狀態；5）新增的三個欄位擴展需求需要資料庫遷移和 UI 更新，增加了複雜度。建議將剩餘工作拆分為更細緻的子任務以確保完整實作。"
+		},
+		{
+			"taskId": 10,
+			"taskTitle": "實作報表分析頁面與匯出功能",
+			"complexityScore": 8,
 			"recommendedSubtasks": 6,
-			"expansionPrompt": "將此任務分解為獨立的配置和實作步驟：服務註冊、ChartService 實作、基礎圖表元件、資料模型建立、圖表配置設定，以及容器架構建立。每個子任務應該是可獨立完成和測試的功能單元。",
-			"reasoning": "此任務涉及多個技術層面的整合工作，包括服務配置、元件架構設計、資料模型轉換等，需要對 Blazor 和 ApexCharts.NET 有深入理解。複雜度中等偏高，建議分解為 6 個子任務以確保每個步驟都能充分實作和驗證。"
+			"expansionPrompt": "將報表分析頁面拆分為具體的功能模組：建立報表資料服務層、實作策略績效比較元件、建立篩選器元件、實作交易記錄檢視、開發圖表匯出功能和 CSV 匯出功能。每個子任務應包含資料處理邏輯、UI 元件實作和相應的測試策略。",
+			"reasoning": "基於代碼分析發現：1）Reports.razor 頁面存在但內容需要實作；2）專案已有完整的圖表服務和資料模型架構；3）需要整合現有的 PurchaseRecord 資料來源；4）匯出功能需要額外的第三方套件整合；5）報表功能涉及複雜的資料聚合和視覺化，需要多個專業元件配合。複雜度較高，建議拆分為 6 個專業子任務。"
 		}
 	]
 }
