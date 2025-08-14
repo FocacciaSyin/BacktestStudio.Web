@@ -336,8 +336,8 @@
             "dependencies": [
               "1"
             ],
-            "details": "1. 建立 Components/Pages/PurchasePoints.razor 主頁面，使用 @page \"/purchase-points\" 路由\n2. 建立 Components/PurchaseRecordForm.razor 表單元件，使用 Blazor EditForm\n3. 表單包含買入日期、價格、數量三個基本欄位\n4. 實作表單驗證：價格和數量必須大於 0，日期不能未來\n5. 實作新增和編輯模式切換\n6. 加入簡單的 Bootstrap 樣式",
-            "status": "in-progress",
+            "details": "1. 建立 Components/Pages/PurchasePoints.razor 主頁面，使用 @page \"/purchase-points\" 路由\n2. 建立 Components/PurchaseRecordForm.razor 表單元件，使用 Blazor EditForm\n3. 表單包含買入日期、價格、數量三個基本欄位\n4. 實作表單驗證：價格和數量必須大於 0，日期不能未來\n5. 實作新增和編輯模式切換\n6. 加入簡單的 Bootstrap 樣式\n<info added on 2025-08-14T06:13:28.354Z>\n實作完成摘要：\n1. PurchaseRecordForm.razor 表單元件實作完成，包含完整的 EditForm 驗證機制\n2. PurchasePoints.razor 主頁面更新完成，加入響應式 Bootstrap 樣式和表單整合\n3. PurchaseRecordDto 加入 DataAnnotations 驗證屬性，包含自訂的日期驗證邏輯\n4. 應用程式編譯和運行測試通過，表單驗證功能正常運作\n5. UI 使用響應式設計，支援不同螢幕尺寸的良好顯示效果\n</info added on 2025-08-14T06:13:28.354Z>\n<info added on 2025-08-14T06:36:13.973Z>\nUX 優化完成 - 彈出對話框實作：\n1. 建立 PurchaseRecordDialog.razor 模態對話框元件，基於現有 ConfirmDialog 設計模式\n2. 重構 PurchasePoints.razor 移除內嵌表單，改用對話框操作模式\n3. 加入 @rendermode InteractiveServer 確保 Blazor 伺服器端互動功能\n4. 實作智慧圖標系統：新增操作顯示綠色加號圖標，編輯操作顯示藍色鉛筆圖標\n5. 實作進階互動功能：支援背景點擊關閉和 ESC 鍵盤快速關閉\n6. 驗證所有原有表單驗證邏輯和 CRUD 操作功能完整保留\n7. 完成應用程式整合測試，確認對話框開啟、關閉和資料處理流程正常運作\n</info added on 2025-08-14T06:36:13.973Z>",
+            "status": "done",
             "testStrategy": "測試頁面路由、表單輸入驗證、新增編輯模式切換、基本 UI 顯示"
           },
           {
@@ -352,11 +352,24 @@
             "testStrategy": "測試記錄列表顯示、刪除確認功能、損益計算邏輯準確性、總計數值正確性"
           }
         ]
+      },
+      {
+        "id": 12,
+        "title": "修正 SQLite 資料庫錯誤並建立 Entity Framework 遷移",
+        "description": "解決「no such table: PurchaseRecords」錯誤，建立完整的 Entity Framework Core 遷移系統並更新 SQLite 資料庫架構",
+        "details": "1. 建立 Entity Framework Core DbContext 類別，設定 SQLite 連接字串\n2. 定義 PurchaseRecord Entity 模型，包含必要的資料註解和關聯\n3. 在 Program.cs 中註冊 DbContext 服務和 SQLite 提供者\n4. 執行 dotnet ef migrations add InitialCreate 建立初始遷移\n5. 執行 dotnet ef database update 建立實際資料庫表格\n6. 驗證 SQLite 資料庫檔案和 PurchaseRecords 表格正確建立\n7. 更新現有服務類別以使用 Entity Framework 取代記憶體存儲\n8. 建立資料庫種子資料方法，提供測試資料\n9. 處理資料庫連接錯誤和例外狀況\n10. 更新 appsettings.json 設定檔加入資料庫連接字串",
+        "testStrategy": "驗證 Entity Framework 遷移檔案正確產生，確認 SQLite 資料庫檔案建立成功，測試 PurchaseRecords 表格結構符合 Entity 定義，驗證基本 CRUD 操作正常運作，測試資料庫連接失敗時的錯誤處理，確認資料持久化功能正常",
+        "status": "done",
+        "dependencies": [
+          11
+        ],
+        "priority": "medium",
+        "subtasks": []
       }
     ],
     "metadata": {
       "created": "2025-08-06T14:29:34.738Z",
-      "updated": "2025-08-13T15:24:43.429Z",
+      "updated": "2025-08-14T06:36:20.762Z",
       "description": "Tasks for frontend context"
     }
   }
