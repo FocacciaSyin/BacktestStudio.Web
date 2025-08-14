@@ -5,15 +5,8 @@
       "command": "npx",
       "args": ["-y", "task-master-ai"],
       "env": {
-        "ANTHROPIC_API_KEY": "YOUR_ANTHROPIC_API_KEY_HERE",
-        "PERPLEXITY_API_KEY": "YOUR_PERPLEXITY_API_KEY_HERE",
-        "OPENAI_API_KEY": "YOUR_OPENAI_KEY_HERE",
-        "GOOGLE_API_KEY": "YOUR_GOOGLE_KEY_HERE",
-        "XAI_API_KEY": "YOUR_XAI_KEY_HERE",
-        "OPENROUTER_API_KEY": "YOUR_OPENROUTER_KEY_HERE",
-        "MISTRAL_API_KEY": "YOUR_MISTRAL_KEY_HERE",
-        "AZURE_OPENAI_API_KEY": "YOUR_AZURE_KEY_HERE",
-        "OLLAMA_API_KEY": "YOUR_OLLAMA_API_KEY_HERE"
+        "OPENAI_API_KEY": "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",
+        "GOOGLE_API_KEY": "AIzaSyCjp1Xl7m4jHfU-5HStyVzKvU6-yyO1GYk"
       }
     },
     "context7": {

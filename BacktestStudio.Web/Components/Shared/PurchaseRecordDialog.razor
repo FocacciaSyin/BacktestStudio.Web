@@ -18,6 +18,12 @@
                     <ValidationSummary class="alert alert-danger" />
                     
                     <div class="mb-3">
+                        <label class="form-label">股票代號</label>
+                        <InputText @bind-Value="record.Symbol" class="form-control" placeholder="例如：AAPL" />
+                        <ValidationMessage For="@(() => record.Symbol)" class="text-danger" />
+                    </div>
+                    
+                    <div class="mb-3">
                         <label class="form-label">買入日期</label>
                         <InputDate @bind-Value="record.Date" class="form-control" />
                         <ValidationMessage For="@(() => record.Date)" class="text-danger" />
@@ -33,6 +39,27 @@
                         <label class="form-label">數量</label>
                         <InputNumber @bind-Value="record.Quantity" class="form-control" />
                         <ValidationMessage For="@(() => record.Quantity)" class="text-danger" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">停損點位 <small class="text-muted">(可選)</small></label>
+                        <InputNumber @bind-Value="record.StopLossPrice" class="form-control" step="0.01" />
+                        <ValidationMessage For="@(() => record.StopLossPrice)" class="text-danger" />
+                        <div class="form-text">設定停損價格，達到此價格時應考慮賣出</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">獲利金額 <small class="text-muted">(可選)</small></label>
+                        <InputNumber @bind-Value="record.ProfitAmount" class="form-control" step="0.01" />
+                        <ValidationMessage For="@(() => record.ProfitAmount)" class="text-danger" />
+                        <div class="form-text">記錄實際獲利或虧損金額</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">結算日期 <small class="text-muted">(可選)</small></label>
+                        <InputDate @bind-Value="record.SettlementDate" class="form-control" />
+                        <ValidationMessage For="@(() => record.SettlementDate)" class="text-danger" />
+                        <div class="form-text">股票賣出或結算的日期</div>
                     </div>
                     
                     <div class="modal-footer px-0 pb-0">
@@ -85,9 +112,13 @@
             record = new PurchaseRecordDto
             {
                 Id = Record.Id,
+                Symbol = Record.Symbol,
                 Date = Record.Date,
                 Price = Record.Price,
-                Quantity = Record.Quantity
+                Quantity = Record.Quantity,
+                StopLossPrice = Record.StopLossPrice,
+                ProfitAmount = Record.ProfitAmount,
+                SettlementDate = Record.SettlementDate
             };
         else
             record = new PurchaseRecordDto();
@@ -107,9 +138,13 @@
         record = new PurchaseRecordDto
         {
             Id = recordToEdit.Id,
+            Symbol = recordToEdit.Symbol,
             Date = recordToEdit.Date,
             Price = recordToEdit.Price,
-            Quantity = recordToEdit.Quantity
+            Quantity = recordToEdit.Quantity,
+            StopLossPrice = recordToEdit.StopLossPrice,
+            ProfitAmount = recordToEdit.ProfitAmount,
+            SettlementDate = recordToEdit.SettlementDate
         };
         IsVisible = true;
         InvokeAsync(StateHasChanged);

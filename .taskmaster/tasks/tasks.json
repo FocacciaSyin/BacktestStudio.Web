@@ -367,8 +367,8 @@
             "dependencies": [
               "11.4"
             ],
-            "details": "1. 在 PurchaseRecordForm.razor 中新增 StopLossPrice 數字輸入欄位\n2. 新增 ProfitAmount 數字輸入欄位，支援自動計算預填值\n3. 新增 SettlementDate 日期選擇器欄位\n4. 更新表單驗證邏輯，確保新欄位符合業務規則\n5. 調整表單佈局，保持良好的使用者體驗\n6. 更新相關 DTO 類別以支援新欄位",
-            "status": "pending",
+            "details": "1. 在 PurchaseRecordForm.razor 中新增 StopLossPrice 數字輸入欄位\n2. 新增 ProfitAmount 數字輸入欄位，支援自動計算預填值\n3. 新增 SettlementDate 日期選擇器欄位\n4. 更新表單驗證邏輯，確保新欄位符合業務規則\n5. 調整表單佈局，保持良好的使用者體驗\n6. 更新相關 DTO 類別以支援新欄位\n<info added on 2025-08-14T08:27:29.162Z>\n**[任務描述修正]**\n根據代碼檢查，原始任務描述存在不準確之處，更新後的任務要求如下：\n\n**核心修正點：**\n1.  **目標元件：** 應修改的元件為 `PurchaseRecordDialog.razor`，而非 `PurchaseRecordForm.razor`。\n2.  **欄位擴充：** 除了原計畫的三個欄位，還需新增 `Symbol` (股票代號) 欄位。\n\n**更新後的實作細節：**\n修改 `PurchaseRecordDialog.razor` 對話框元件，加入以下四個新欄位的輸入控制項，並更新資料綁定邏輯以支援初始化和提交：\n1.  **Symbol (股票代號):** 文字輸入欄位。\n2.  **StopLossPrice (停損點位):** 數字輸入欄位，可選，含驗證。\n3.  **ProfitAmount (獲利金額):** 數字輸入欄位，可選。\n4.  **SettlementDate (結算日期):** 日期選擇器，可選。\n</info added on 2025-08-14T08:27:29.162Z>",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -412,7 +412,7 @@
     ],
     "metadata": {
       "created": "2025-08-06T14:29:34.738Z",
-      "updated": "2025-08-14T07:46:31.060Z",
+      "updated": "2025-08-14T08:30:23.406Z",
       "description": "Tasks for frontend context"
     }
   }
