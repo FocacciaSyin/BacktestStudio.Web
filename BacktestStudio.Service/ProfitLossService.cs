@@ -46,12 +46,12 @@ public class ProfitLossService : IProfitLossService
     public async Task<decimal> CalculateProfitLossPercentageAsync(string symbol, decimal currentPrice)
     {
         var totalInvestment = await _purchaseRecordService.GetTotalInvestmentAsync(symbol);
-        
+
         if (totalInvestment == 0)
             return 0;
 
         var totalProfitLoss = await CalculateTotalProfitLossAsync(symbol, currentPrice);
-        
+
         // 損益百分比 = (總損益 / 總投入金額) × 100%
         return Math.Round((totalProfitLoss / totalInvestment) * 100, 2);
     }
@@ -65,7 +65,7 @@ public class ProfitLossService : IProfitLossService
             throw new ArgumentException("當前價格不能小於零", nameof(currentPrice));
 
         var totalQuantity = await _purchaseRecordService.GetTotalQuantityAsync(symbol);
-        
+
         // 當前市值 = 當前價格 × 總持有數量
         return currentPrice * totalQuantity;
     }
@@ -119,7 +119,7 @@ public class ProfitLossService : IProfitLossService
             }
             priceToUse = currentPrice ?? record.Price; // 如果沒有當前價格，使用買入價格
         }
-        else if (currentPrice.HasValue && record.StopLossPrice.HasValue && 
+        else if (currentPrice.HasValue && record.StopLossPrice.HasValue &&
                  IsStopLossTriggered(record, currentPrice.Value))
         {
             // 如果觸發停損，使用停損價格
@@ -133,10 +133,10 @@ public class ProfitLossService : IProfitLossService
 
         // 計算獲利金額
         var profitAmount = (priceToUse - record.Price) * record.Quantity;
-        
+
         // 更新記錄的獲利金額
         record.ProfitAmount = Math.Round(profitAmount, 2);
-        
+
         return record.ProfitAmount.Value;
     }
 
@@ -159,7 +159,7 @@ public class ProfitLossService : IProfitLossService
 
         // 結算損益 = (結算價格 - 買入價格) × 數量
         var settlementProfit = (settlementPrice - record.Price) * record.Quantity;
-        
+
         return Math.Round(settlementProfit, 2);
     }
 }

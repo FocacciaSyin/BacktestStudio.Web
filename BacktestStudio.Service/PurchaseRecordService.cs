@@ -67,7 +67,7 @@ public class PurchaseRecordService : IPurchaseRecordService
 
         _context.PurchaseRecords.Add(purchaseRecord);
         await _context.SaveChangesAsync();
-        
+
         return purchaseRecord;
     }
 
@@ -96,7 +96,7 @@ public class PurchaseRecordService : IPurchaseRecordService
         existingRecord.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
-        
+
         return existingRecord;
     }
 
@@ -115,7 +115,7 @@ public class PurchaseRecordService : IPurchaseRecordService
 
         _context.PurchaseRecords.Remove(record);
         await _context.SaveChangesAsync();
-        
+
         return true;
     }
 
@@ -127,7 +127,7 @@ public class PurchaseRecordService : IPurchaseRecordService
     public async Task<decimal> GetTotalInvestmentAsync(string? symbol = null)
     {
         var query = _context.PurchaseRecords.AsQueryable();
-        
+
         if (!string.IsNullOrEmpty(symbol))
         {
             query = query.Where(p => p.Symbol == symbol);
@@ -144,7 +144,7 @@ public class PurchaseRecordService : IPurchaseRecordService
     public async Task<int> GetTotalQuantityAsync(string? symbol = null)
     {
         var query = _context.PurchaseRecords.AsQueryable();
-        
+
         if (!string.IsNullOrEmpty(symbol))
         {
             query = query.Where(p => p.Symbol == symbol);
@@ -162,14 +162,14 @@ public class PurchaseRecordService : IPurchaseRecordService
     public async Task<decimal> GetAveragePurchasePriceAsync(string? symbol = null)
     {
         var query = _context.PurchaseRecords.AsQueryable();
-        
+
         if (!string.IsNullOrEmpty(symbol))
         {
             query = query.Where(p => p.Symbol == symbol);
         }
 
         var records = await query.ToListAsync();
-        
+
         if (!records.Any())
         {
             return 0;
@@ -179,7 +179,7 @@ public class PurchaseRecordService : IPurchaseRecordService
         // 這樣可以準確反映不同價格和數量的買入對平均價格的影響
         var totalInvestment = records.Sum(p => p.Price * p.Quantity);
         var totalQuantity = records.Sum(p => p.Quantity);
-        
+
         return totalQuantity > 0 ? totalInvestment / totalQuantity : 0;
     }
 }
