@@ -378,8 +378,8 @@
             "dependencies": [
               "11.4"
             ],
-            "details": "1. 更新 ProfitLossService 中的計算方法，整合 StopLossPrice 停損邏輯\n2. 實作自動獲利計算功能，在儲存前預填 ProfitAmount 欄位\n3. 加入結算日期相關的損益計算邏輯\n4. 更新服務介面以支援新的欄位參數\n5. 實作停損觸發時的獲利/虧損計算\n6. 加入適當的錯誤處理和邊界條件檢查",
-            "status": "pending",
+            "details": "1. 更新 ProfitLossService 中的計算方法，整合 StopLossPrice 停損邏輯\n2. 實作自動獲利計算功能，在儲存前預填 ProfitAmount 欄位\n3. 加入結算日期相關的損益計算邏輯\n4. 更新服務介面以支援新的欄位參數\n5. 實作停損觸發時的獲利/虧損計算\n6. 加入適當的錯誤處理和邊界條件檢查\n<info added on 2025-08-14T08:38:16.360Z>\n**實作成果與驗證：**\n- **服務介面擴充：** 在 `IProfitLossService` 介面中新增了 `CalculateAndSetProfitAmount`, `IsStopLossTriggered`, `CalculateSettlementProfit` 方法。\n- **核心邏輯增強：**\n  - `ProfitLossService` 已實作新的損益計算邏輯，能夠智慧選擇使用當前價格、停損價格或結算價格。\n  - 成功整合停損觸發條件 (當前價格 <= 停損價) 及結算日期的損益計算。\n  - 已加入必要的錯誤處理與邊界條件檢查。\n- **資料層整合：** `PurchaseRecordService` 的 `UpdateAsync` 方法已更新，支援所有新欄位 (`Symbol`, `StopLossPrice`, `ProfitAmount`, `SettlementDate`) 的更新，並維持資料一致性。\n- **初步測試通過：** 專案可成功建置，新方法皆已實作，且服務依賴關係正確，無循環依賴問題。\n</info added on 2025-08-14T08:38:16.360Z>",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -412,7 +412,7 @@
     ],
     "metadata": {
       "created": "2025-08-06T14:29:34.738Z",
-      "updated": "2025-08-14T08:30:23.406Z",
+      "updated": "2025-08-14T08:38:20.231Z",
       "description": "Tasks for frontend context"
     }
   }

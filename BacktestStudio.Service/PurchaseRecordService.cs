@@ -90,6 +90,9 @@ public class PurchaseRecordService : IPurchaseRecordService
         existingRecord.Price = purchaseRecord.Price;
         existingRecord.Quantity = purchaseRecord.Quantity;
         existingRecord.Symbol = purchaseRecord.Symbol;
+        existingRecord.StopLossPrice = purchaseRecord.StopLossPrice;
+        existingRecord.ProfitAmount = purchaseRecord.ProfitAmount;
+        existingRecord.SettlementDate = purchaseRecord.SettlementDate;
         existingRecord.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
