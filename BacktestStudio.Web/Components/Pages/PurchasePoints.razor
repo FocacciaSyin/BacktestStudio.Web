@@ -20,12 +20,85 @@
                 </button>
             </div>
 
+            <!-- 損益摘要區塊 -->
+            @if (records != null && records.Any())
+            {
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">總投入金額</h6>
+                                        <h4 class="mb-0">$@TotalInvestment.ToString("N2")</h4>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="bi bi-cash-coin fs-2"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">當前價值</h6>
+                                        <h4 class="mb-0">$@TotalCurrentValue.ToString("N2")</h4>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="bi bi-bar-chart fs-2"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card @(TotalProfitLoss >= 0 ? "bg-success" : "bg-danger") text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">總損益</h6>
+                                        <h4 class="mb-0">@(TotalProfitLoss >= 0 ? "+" : "")$@TotalProfitLoss.ToString("N2")</h4>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="bi bi-@(TotalProfitLoss >= 0 ? "trending-up" : "trending-down") fs-2"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card @(TotalProfitLossPercentage >= 0 ? "bg-success" : "bg-danger") text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">總報酬率</h6>
+                                        <h4 class="mb-0">@(TotalProfitLossPercentage >= 0 ? "+" : "")@TotalProfitLossPercentage.ToString("N2")%</h4>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="bi bi-percent fs-2"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">
                         <i class="bi bi-table me-1"></i>
                         買入記錄列表
                     </h5>
+                    <div>
+                        <small class="text-muted">模擬當前價格: $@currentPrice.ToString("N2")</small>
+                        <button class="btn btn-sm btn-outline-secondary ms-2" @onclick="RefreshCurrentPrice" title="更新當前價格">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     @if (records == null)
@@ -51,24 +124,38 @@
                                 <thead class="table-dark">
                                     <tr>
                                         <th><i class="bi bi-calendar3 me-1"></i>日期</th>
-                                        <th><i class="bi bi-currency-dollar me-1"></i>價格</th>
+                                        <th><i class="bi bi-currency-dollar me-1"></i>買入價格</th>
                                         <th><i class="bi bi-hash me-1"></i>數量</th>
+                                        <th><i class="bi bi-cash me-1"></i>投入金額</th>
+                                        <th><i class="bi bi-bar-chart me-1"></i>當前價值</th>
+                                        <th><i class="bi bi-graph-up me-1"></i>損益</th>
+                                        <th><i class="bi bi-percent me-1"></i>報酬率</th>
                                         <th><i class="bi bi-gear me-1"></i>操作</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var rec in records.OrderByDescending(r => r.Date))
                                     {
+                                        var profitLoss = rec.CalculateProfitLoss(currentPrice);
+                                        var profitLossPercentage = rec.CalculateProfitLossPercentage(currentPrice);
                                         <tr>
                                             <td>@rec.Date.ToString("yyyy-MM-dd")</td>
                                             <td class="text-end">$@rec.Price.ToString("N2")</td>
                                             <td class="text-end">@rec.Quantity.ToString("N0")</td>
+                                            <td class="text-end">$@rec.TotalInvestment.ToString("N2")</td>
+                                            <td class="text-end">$@rec.CalculateCurrentValue(currentPrice).ToString("N2")</td>
+                                            <td class="text-end @(profitLoss >= 0 ? "text-success" : "text-danger")">
+                                                @(profitLoss >= 0 ? "+" : "")$@profitLoss.ToString("N2")
+                                            </td>
+                                            <td class="text-end @(profitLossPercentage >= 0 ? "text-success" : "text-danger")">
+                                                @(profitLossPercentage >= 0 ? "+" : "")@profitLossPercentage.ToString("N2")%
+                                            </td>
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <button class="btn btn-sm btn-outline-primary" @onclick="() => EditRecord(rec)" title="編輯">
                                                         <i class="bi bi-pencil"></i>
                                                     </button>
-                                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteRecord(rec.Id)" title="刪除">
+                                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => ConfirmDelete(rec)" title="刪除">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </div>
@@ -90,12 +177,62 @@
                       OnSaved="OnRecordSaved" 
                       OnCancelled="OnDialogCancelled" />
 
+<!-- 刪除確認對話框 -->
+@if (showDeleteConfirm)
+{
+    <div class="modal show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle text-warning me-2"></i>
+                        確認刪除
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <p>您確定要刪除以下記錄嗎？</p>
+                    @if (recordToDelete != null)
+                    {
+                        <div class="alert alert-info">
+                            <strong>日期：</strong>@recordToDelete.Date.ToString("yyyy-MM-dd")<br>
+                            <strong>價格：</strong>$@recordToDelete.Price.ToString("N2")<br>
+                            <strong>數量：</strong>@recordToDelete.Quantity.ToString("N0")<br>
+                            <strong>投入金額：</strong>$@recordToDelete.TotalInvestment.ToString("N2")
+                        </div>
+                    }
+                    <p class="text-danger mb-0">
+                        <i class="bi bi-info-circle me-1"></i>
+                        此操作無法復原
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CancelDelete">
+                        <i class="bi bi-x-circle me-1"></i>取消
+                    </button>
+                    <button type="button" class="btn btn-danger" @onclick="ConfirmDeleteAction">
+                        <i class="bi bi-trash me-1"></i>確認刪除
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     [Inject]
     private IPurchaseRecordService PurchaseRecordService { get; set; } = default!;
 
     private List<PurchaseRecordDto>? records;
     private PurchaseRecordDialog? purchaseDialog;
+    private decimal currentPrice = 150.00m; // 模擬當前股價
+    private bool showDeleteConfirm = false;
+    private PurchaseRecordDto? recordToDelete;
+
+    // 計算摘要資訊
+    private decimal TotalInvestment => records?.Sum(r => r.TotalInvestment) ?? 0;
+    private decimal TotalCurrentValue => records?.Sum(r => r.CalculateCurrentValue(currentPrice)) ?? 0;
+    private decimal TotalProfitLoss => TotalCurrentValue - TotalInvestment;
+    private decimal TotalProfitLossPercentage => TotalInvestment > 0 ? (TotalProfitLoss / TotalInvestment) * 100 : 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -110,7 +247,11 @@
             Id = x.Id,
             Date = x.Date,
             Price = x.Price,
-            Quantity = x.Quantity
+            Quantity = x.Quantity,
+            Symbol = x.Symbol ?? string.Empty,
+            StopLossPrice = x.StopLossPrice,
+            ProfitAmount = x.ProfitAmount,
+            SettlementDate = x.SettlementDate
         }).ToList();
     }
 
@@ -124,10 +265,36 @@
         purchaseDialog?.ShowEditDialog(rec);
     }
 
-    private async Task DeleteRecord(int id)
+    private void ConfirmDelete(PurchaseRecordDto record)
     {
-        await PurchaseRecordService.DeleteAsync(id);
-        await LoadRecords();
+        recordToDelete = record;
+        showDeleteConfirm = true;
+    }
+
+    private void CancelDelete()
+    {
+        recordToDelete = null;
+        showDeleteConfirm = false;
+    }
+
+    private async Task ConfirmDeleteAction()
+    {
+        if (recordToDelete != null)
+        {
+            await PurchaseRecordService.DeleteAsync(recordToDelete.Id);
+            await LoadRecords();
+            StateHasChanged();
+        }
+        recordToDelete = null;
+        showDeleteConfirm = false;
+    }
+
+    private void RefreshCurrentPrice()
+    {
+        // 模擬價格變動（實際應用中會從 API 獲取）
+        var random = new Random();
+        var change = (decimal)(random.NextDouble() * 20 - 10); // -10 到 +10 的變動
+        currentPrice = Math.Max(1, currentPrice + change);
         StateHasChanged();
     }
 
@@ -141,7 +308,10 @@
                 Date = record.Date,
                 Price = record.Price,
                 Quantity = record.Quantity,
-                Symbol = "" // 可擴充
+                Symbol = record.Symbol,
+                StopLossPrice = record.StopLossPrice,
+                ProfitAmount = record.ProfitAmount,
+                SettlementDate = record.SettlementDate
             });
         }
         else
@@ -153,7 +323,10 @@
                 Date = record.Date,
                 Price = record.Price,
                 Quantity = record.Quantity,
-                Symbol = ""
+                Symbol = record.Symbol,
+                StopLossPrice = record.StopLossPrice,
+                ProfitAmount = record.ProfitAmount,
+                SettlementDate = record.SettlementDate
             });
         }
         await LoadRecords();
