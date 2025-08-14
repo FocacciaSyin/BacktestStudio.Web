@@ -24,10 +24,39 @@
 
 ### 1.3 技術架構
 
-- **前端**: Blazor Server/WebAssembly
+- **前端**: Blazor Server
 - **後端**: ASP.NET Core Web API (C#)
 - **資料庫**: SQLite + Entity Framework Core
-- **圖表**: Chart.js 或 ApexCharts
+- **圖表**: ApexCharts.NET
+- **UI框架**: Bootstrap CSS
+
+### 1.4 專案結構規範
+
+#### 模型組織原則
+所有模型類別統一放在 `/Models` 資料夾底下，按照功能和用途分類：
+
+```
+Models/
+├── Chart/                      # 圖表相關模型
+│   ├── ChartDataPoint.cs       # 統一的圖表數據點模型
+│   ├── CandlestickData.cs      # K線圖資料模型
+│   ├── ApexCandlestickSeries.cs # ApexCharts K線圖資料序列格式
+│   ├── ApexCandlestickDataPoint.cs # ApexCharts K線資料點
+│   └── ChartOptions.cs         # 圖表配置選項模型
+├── DTOs/                       # 數據傳輸對象
+│   ├── MarketDataPoint.cs      # 市場數據點
+│   ├── TechnicalIndicatorData.cs # 技術指標數據
+│   ├── StrategyDto.cs          # 策略數據傳輸對象
+│   └── PerformanceMetrics.cs   # 績效指標
+└── ViewModels/                 # 檢視模型
+    └── DashboardViewModel.cs   # 主儀表板視圖模型
+```
+
+#### 模型設計規範
+- **單一職責**: 每個模型類別只負責一個特定的數據結構
+- **完整文檔**: 每個類別和欄位都必須有詳細的XML註解
+- **統一命名**: 使用描述性的類別和屬性命名
+- **獨立文件**: 每個類別使用獨立的 .cs 文件
 
 ## 2. 核心功能需求
 

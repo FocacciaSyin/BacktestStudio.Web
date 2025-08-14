@@ -1,0 +1,376 @@
+{
+  "frontend": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "完成前端專案基礎架構與核心服務",
+        "description": "完成 Blazor Server 專案基礎結構的剩餘工作，主要是驗證和測試已建立的服務",
+        "details": "基礎架構已大部分完成：\n✅ 資料夾結構已建立 (Components/, Services/, Models/DTOs/, Models/ViewModels/)\n✅ Program.cs 服務注入已完成 (AppState, IApiService, IChartService, HttpClient)\n✅ IApiService 介面已定義，MockApiService 已實作\n✅ AppState 狀態管理服務已完整實作\n✅ DTOs 已建立 (StrategyDto, MarketDataPoint, PerformanceMetrics, TechnicalIndicatorData)\n✅ ViewModels 已建立 (DashboardViewModel)\n\n剩餘工作：\n1. 驗證所有服務的依賴注入配置正確性\n2. 測試 AppState 狀態變更通知機制\n3. 確認 MockApiService 的完整功能",
+        "testStrategy": "單元測試服務介面定義，驗證依賴注入配置正確，測試 AppState 狀態變更通知機制",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "完善基礎佈局元件與導航",
+        "description": "檢查並完善已建立的佈局元件，確保導航包含所有必要頁面連結",
+        "details": "大部分佈局工作已完成：\n✅ MainLayout.razor 已存在\n✅ NavMenu.razor 已存在\n✅ Routes.razor 已設定\n✅ 共用元件已建立 (LoadingSpinner, ErrorAlert, LoadingWrapper)\n✅ Bootstrap CSS 已整合\n\n需要完成的工作：\n1. 檢查 NavMenu.razor 是否包含所有必要頁面連結 (儀表板、策略管理、圖表檢視、報表)\n2. 驗證響應式導航選單功能\n3. 確認是否需要 ConfirmDialog 共用元件\n4. 檢查全域 CSS 樣式設定",
+        "testStrategy": "測試導航連結功能，驗證響應式佈局在不同螢幕尺寸下的表現，測試共用元件的顯示與互動",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "檢查並完善 NavMenu 導航選單連結",
+            "description": "審查現有的 NavMenu.razor 元件，確保包含所有必要的頁面連結，包括儀表板、策略管理、圖表檢視、報表等主要功能頁面",
+            "dependencies": [],
+            "details": "檢查 NavMenu.razor 中的導航項目，確保包含：1. 主儀表板 (Dashboard) 連結，2. 策略管理 (Strategy Management) 連結，3. 圖表檢視 (Charts) 連結，4. 報表分析 (Reports) 連結。驗證每個連結的路由路徑正確對應到相關的頁面元件，確保導航文字和圖示適當且符合使用者體驗",
+            "status": "done",
+            "testStrategy": "測試每個導航連結是否能正確導航到對應頁面，驗證活動狀態的視覺標示功能"
+          },
+          {
+            "id": 2,
+            "title": "驗證響應式導航選單功能",
+            "description": "測試並確認 NavMenu 在不同螢幕尺寸下的響應式行為，包括行動版的摺疊選單功能",
+            "dependencies": [
+              "2.1"
+            ],
+            "details": "測試 Bootstrap 導航元件在桌面、平板和手機螢幕尺寸下的顯示效果。確認行動版本的漢堡選單按鈕功能正常，摺疊和展開動畫流暢。檢查導航項目在小螢幕下的垂直排列和適當的觸控區域大小。驗證導航選單的 z-index 層級確保不被其他元素遮擋",
+            "status": "done",
+            "testStrategy": "在不同裝置尺寸下測試導航功能，包括 Chrome DevTools 的裝置模擬和實際裝置測試"
+          },
+          {
+            "id": 3,
+            "title": "評估並實作 ConfirmDialog 共用元件",
+            "description": "分析專案需求，決定是否需要建立 ConfirmDialog 共用元件，如需要則進行實作",
+            "dependencies": [
+              "2.2"
+            ],
+            "details": "評估應用程式中可能需要確認對話框的場景，如刪除策略、清除資料等操作。如確定需要，則建立 ConfirmDialog.razor 元件，包含：1. 標題、訊息內容和按鈕配置，2. 確認和取消回調函數，3. Bootstrap Modal 樣式整合，4. 鍵盤導航支援 (ESC 關閉、Enter 確認)。將元件註冊到 _Imports.razor 以供全域使用",
+            "status": "done",
+            "testStrategy": "測試對話框的顯示隱藏功能，鍵盤操作響應，以及回調函數的正確執行"
+          },
+          {
+            "id": 4,
+            "title": "檢查並優化全域 CSS 樣式設定",
+            "description": "審查 app.css 和相關樣式檔案，確保全域樣式設定適合金融回測應用的視覺需求",
+            "dependencies": [
+              "2.3"
+            ],
+            "details": "檢查 wwwroot/app.css 中的全域樣式定義，確保：1. 色彩配置適合金融數據顯示 (如綠色代表上漲、紅色代表下跌)，2. 字體設定適合數字和圖表顯示，3. 間距和佈局變數符合整體設計，4. 響應式斷點設定合理。考慮添加自定義 CSS 變數用於主題色彩管理，確保與 Bootstrap 樣式的兼容性\n<info added on 2025-08-06T15:27:49.495Z>\n實作完成更新：已成功完成全域CSS樣式優化，包含金融主題色彩配置（綠色上漲、紅色下跌）、等寬數字字體、金融UI元件（資料卡片、統計數字、變化指示箭頭）、響應式設計優化，並已應用到Dashboard和Strategies頁面，代碼已清理完畢。所有原定CSS樣式優化需求已完成，為後續金融圖表和數據顯示奠定了樣式基礎。\n</info added on 2025-08-06T15:27:49.495Z>",
+            "status": "done",
+            "testStrategy": "視覺測試樣式在不同頁面的一致性，色彩對比度測試確保可讀性"
+          },
+          {
+            "id": 5,
+            "title": "整合測試佈局元件與導航系統",
+            "description": "進行完整的佈局系統整合測試，確保所有元件協同工作且使用者體驗流暢",
+            "dependencies": [
+              "2.1",
+              "2.2",
+              "2.3",
+              "2.4"
+            ],
+            "details": "執行端到端的佈局功能測試：1. 測試頁面間導航的流暢性和一致性，2. 驗證載入狀態顯示正確，3. 測試錯誤狀態的處理和顯示，4. 確認共用元件在不同頁面中的行為一致，5. 檢查記憶體使用情況避免元件重複渲染。使用 dotnet run 啟動應用程式進行實際瀏覽測試，記錄任何發現的問題並進行修正",
+            "status": "done",
+            "testStrategy": "完整的手動測試流程，包括正常使用情境和邊界情況測試，效能測試確保頁面載入速度"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "優化 API 服務實作",
+        "description": "完善 MockApiService 實作，添加錯誤處理和快取機制",
+        "details": "基礎 API 服務架構已完成：\n✅ IApiService 介面已定義\n✅ MockApiService 基礎實作已完成\n\n需要增強的功能：\n1. 完善 MockApiService 的所有方法實作\n2. 實作錯誤處理機制，包含 HTTP 狀態碼處理和重試邏輯\n3. 設定 JSON 序列化設定適用於 .NET 型別\n4. 實作請求/回應攔截器用於載入狀態和錯誤通知\n5. 建立 API 端點配置管理 (appsettings.json)\n6. 實作資料快取機制減少不必要的 API 呼叫",
+        "testStrategy": "模擬 API 測試各種請求情境，錯誤處理測試 (網路錯誤、伺服器錯誤、驗證失敗)，快取機制驗證",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "建立策略管理頁面與表單元件",
+        "description": "實作策略管理的完整 CRUD 介面，包含表單驗證和清單檢視",
+        "details": "Components/Strategy/ 資料夾已建立，需要實作其中的元件：\n1. 實作 StrategyManager.razor 主頁面，整合策略清單和表單\n2. 建立 StrategyForm.razor 支援新增/編輯策略，包含完整表單驗證\n3. 實作 StrategyList.razor 顯示策略清單，支援排序、篩選、分頁\n4. 建立 StrategyDetails.razor 顯示策略詳細資訊\n5. 實作批次操作功能 (批次刪除、啟用/停用)\n6. 整合確認對話框用於刪除操作\n7. 實作表單驗證規則和錯誤訊息顯示",
+        "testStrategy": "表單驗證測試，CRUD 操作功能測試，分頁和篩選功能驗證，批次操作測試",
+        "priority": "medium",
+        "dependencies": [
+          2,
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "完成 ApexCharts.NET 整合配置",
+        "description": "完成 ApexCharts.NET 的服務註冊和基礎圖表元件架構建立",
+        "status": "pending",
+        "dependencies": [
+          1
+        ],
+        "priority": "medium",
+        "details": "ApexCharts.NET 套件已安裝並完成基礎整合配置：\n✅ ApexCharts.NET (Blazor-ApexCharts v6.0.1) 已安裝\n✅ ApexCharts 服務已在 Program.cs 中註冊\n✅ ChartService.cs 基礎實作完成\n✅ TradingChart.razor 組件實作並修正空引用異常\n✅ 圖表資料模型和轉換邏輯建立\n✅ 圖表基礎配置完成（主題、顏色、工具列）\n✅ 圖表測試頁面 (/chart-test) 實作並可正常運行\n\n技術修正成果：\n- 修正了 ApexPointSeries OnInitialized() 的空引用異常\n- 統一使用 ChartDataPoint 類型簡化數據結構\n- 暫時使用 ChartType.Line 替代有問題的 Candlestick 類型\n- 完善了數據綁定和圖表配置邏輯\n\n測試結果：\n- 圖表可正常顯示價格線（收盤價）\n- MA5 和 MA20 技術指標可切換顯示\n- 圖表工具欄功能正常（縮放、平移等）\n- 無編譯錯誤，運行時無異常\n\n基礎整合已完成，為後續任務6（實作蠟燭圖與技術指標元件）打好穩固基礎。",
+        "testStrategy": "✅ 圖表渲染測試已通過 - 價格線正常顯示\n✅ 資料格式轉換驗證已完成 - ChartDataPoint 模型運作正常\n✅ 圖表配置和主題設定測試已通過 - 工具列和顏色配置正確\n✅ 技術指標切換功能測試通過 - MA5/MA20 可正常切換\n✅ 組件初始化測試通過 - 無空引用異常",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "在 Program.cs 中註冊 ApexCharts 服務",
+            "description": "完成 ApexCharts 服務註冊配置",
+            "status": "done",
+            "dependencies": [],
+            "details": "已成功在 Program.cs 中添加 AddApexCharts() 服務註冊",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "完善 ChartService.cs 實作",
+            "description": "處理圖表資料準備和計算邏輯",
+            "status": "done",
+            "dependencies": [],
+            "details": "已實作基礎 ChartService，包含數據轉換和技術指標計算邏輯",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "實作 TradingChart.razor 基礎圖表元件",
+            "description": "建立基礎圖表元件並修正技術問題",
+            "status": "done",
+            "dependencies": [],
+            "details": "已完成 TradingChart.razor 實作，修正空引用異常，暫時使用 Line 圖表替代 Candlestick",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "建立圖表資料模型和轉換邏輯",
+            "description": "設計統一的資料結構和轉換機制",
+            "status": "done",
+            "dependencies": [],
+            "details": "已建立 ChartDataPoint 統一資料模型，完成價格和技術指標資料轉換",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "設定圖表基礎配置",
+            "description": "配置圖表主題、顏色和工具列",
+            "status": "done",
+            "dependencies": [],
+            "details": "已完成圖表配置，包含工具列設定、顏色主題和基礎樣式",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "建立圖表測試頁面驗證功能",
+            "description": "實作測試頁面確保圖表功能正常運作",
+            "status": "done",
+            "dependencies": [],
+            "details": "已實作 /chart-test 測試頁面，驗證圖表渲染、技術指標切換等功能正常",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "驗證和修正 TradingChart 組件渲染問題",
+            "description": "檢查並修正 TradingChart.razor 組件的圖表顯示問題，確保圖表能正常渲染",
+            "dependencies": [],
+            "details": "分析當前 TradingChart.razor 組件的渲染狀況，檢查 ApexChart 組件的初始化過程，驗證資料綁定是否正確，修正任何導致圖表無法顯示的問題。包括檢查 ChartOptions、Series 資料格式，以及組件生命週期方法的正確性。",
+            "status": "in-progress",
+            "testStrategy": ""
+          },
+          {
+            "id": 8,
+            "title": "檢查並建立 LoadingSpinner 共用組件",
+            "description": "驗證 LoadingSpinner 組件是否存在且正常運作，如不存在則建立該組件",
+            "dependencies": [
+              "5.7"
+            ],
+            "details": "檢查 Components/Shared/LoadingSpinner.razor 是否存在，驗證其樣式和動畫效果是否正確。如果組件不存在或有問題，建立一個符合應用程式風格的載入動畫組件，支援自訂大小和顏色參數。",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 9,
+            "title": "驗證 ApexCharts.NET 前端資源載入",
+            "description": "確認 ApexCharts 的 JavaScript 和 CSS 資源正確載入到 Blazor 應用程式中",
+            "dependencies": [
+              "5.8"
+            ],
+            "details": "檢查 App.razor 或 _Host.cshtml 中是否正確引用 ApexCharts 的靜態資源，驗證 JavaScript 互操作是否正常運作。如有問題則修正資源引用路徑，確保圖表庫能正常初始化。",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 10,
+            "title": "完善圖表資料綁定和更新機制",
+            "description": "確保圖表組件的資料綁定機制正確運作，支援動態資料更新",
+            "dependencies": [
+              "5.9"
+            ],
+            "details": "驗證 TradingChart 組件中的資料綁定邏輯，確保 ChartData 參數變更時圖表能正確更新。測試 StateHasChanged() 的觸發時機，修正任何導致圖表不更新的問題。實作資料驗證機制，防止無效資料導致渲染失敗。",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 11,
+            "title": "實作圖表配置和主題設定",
+            "description": "建立完整的圖表配置系統，包含主題、顏色和工具列設定",
+            "dependencies": [
+              "5.10"
+            ],
+            "details": "完善 ApexChartOptions 的配置，包含圖表主題設定、顏色配置、工具列選項等。建立可重複使用的圖表配置方法，支援不同類型圖表的基礎設定。確保圖表樣式與應用程式整體設計一致。",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 12,
+            "title": "建立圖表功能測試和驗證機制",
+            "description": "建立完整的圖表功能測試，確保所有圖表功能正常運作",
+            "dependencies": [
+              "5.11"
+            ],
+            "details": "建立 ChartTest.razor 測試頁面，驗證圖表的各項功能包含：資料顯示、互動功能（縮放、平移）、技術指標切換等。建立測試資料生成方法，確保圖表在不同資料情況下都能正常顯示。記錄所有測試結果和發現的問題。",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "實作蠟燭圖與技術指標元件",
+        "description": "建立完整的 K線圖顯示功能，包含移動平均線等技術指標",
+        "details": "Components/Chart/ 資料夾已建立，需要實作圖表元件：\n1. 實作 CandlestickChart.razor 顯示完整 OHLC 資料\n2. 建立 TechnicalIndicators.razor 支援移動平均線 (MA5, MA20)\n3. 實作 TradeMarkers.razor 在圖表上標記買賣點\n4. 建立時間框架選擇器 (日線、週線、月線)\n5. 實作圖表縮放和平移功能\n6. 建立滑鼠懸停資訊顯示\n7. 實作技術指標開關控制面板\n8. 優化圖表效能處理大量資料點",
+        "testStrategy": "蠟燭圖資料正確性驗證，技術指標計算測試，互動功能測試 (縮放、平移)，效能測試大量資料點",
+        "priority": "medium",
+        "dependencies": [
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "建立策略控制面板元件",
+        "description": "實作策略選擇和快速操作的控制面板，整合即時績效顯示",
+        "details": "1. 實作 StrategyPanel.razor 包含策略下拉選單\n2. 建立快速動作按鈕 (執行回測、編輯、刪除)\n3. 實作策略狀態指示器 (執行中、已完成、錯誤)\n4. 建立策略切換事件處理，通知其他元件\n5. 整合載入動畫和錯誤狀態顯示\n6. 實作策略參數快速預覽\n7. 建立策略效能摘要卡片",
+        "testStrategy": "策略選擇功能測試，快速動作按鈕驗證，狀態指示器正確性測試，元件間通信驗證",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "建立績效面板與指標顯示",
+        "description": "實作完整的績效分析顯示面板，包含關鍵績效指標和視覺化元素",
+        "details": "Components/Performance/ 資料夾已建立，需要實作績效元件：\n1. 實作 PerformancePanel.razor 顯示主要績效指標\n2. 建立 MetricsCard.razor 可重用的指標卡片元件\n3. 實作績效指標計算邏輯 (總獲利、勝率、最大回撤、夏普比率)\n4. 建立 PerformanceTable.razor 詳細交易記錄表格\n5. 實作迷你趨勢圖顯示獲利趨勢\n6. 建立進度條和狀態顏色編碼 (綠色獲利、紅色虧損)\n7. 實作績效資料的即時更新機制",
+        "testStrategy": "績效指標計算準確性驗證，視覺化元件顯示測試，即時更新功能測試，響應式佈局驗證",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "整合主儀表板頁面",
+        "description": "建立整合式的主儀表板，結合圖表、策略面板和績效面板",
+        "details": "1. 實作 Dashboard.razor 整合所有主要元件\n2. 建立三欄式響應式佈局 (策略面板、圖表、績效面板)\n3. 實作元件間的資料同步和狀態管理\n4. 建立即時更新機制，當策略切換時更新所有相關資料\n5. 實作載入狀態協調，避免部分載入的不一致狀態\n6. 建立錯誤處理和使用者通知系統\n7. 優化頁面效能和元件重新渲染邏輯",
+        "testStrategy": "整合測試各元件協作功能，響應式佈局測試，資料同步驗證，效能和載入狀態測試",
+        "priority": "high",
+        "dependencies": [
+          6,
+          7,
+          8
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "實作報表分析頁面與匯出功能",
+        "description": "建立詳細的策略績效分析報表頁面，支援資料篩選和匯出",
+        "details": "1. 實作 Reports.razor 主報表頁面\n2. 建立策略績效比較表格，支援多策略對比\n3. 實作報表篩選器 (日期範圍、策略類型、績效排序)\n4. 建立詳細交易記錄檢視，包含分頁和搜尋\n5. 實作圖表匯出功能 (PNG, PDF)\n6. 建立 CSV 資料匯出功能用於進一步分析\n7. 實作報表列印樣式和版面配置\n8. 建立統計指標視覺化圖表 (獲利分布、勝率趨勢)",
+        "testStrategy": "報表資料準確性驗證，篩選和排序功能測試，匯出功能測試各種格式，列印版面測試",
+        "priority": "low",
+        "dependencies": [
+          8
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "建立買入點位編輯功能",
+        "description": "建立買入點位管理頁面，支援基本買入記錄的新增、編輯、刪除功能和簡易損益計算",
+        "details": "1. 建立 PurchasePoints.razor 主頁面，實作買入點位列表顯示\n2. 實作 PurchaseRecordForm.razor 表單元件，包含買入日期、價格、數量基本欄位\n3. 建立 PurchaseRecord 資料模型類別，包含 Id、Date、Price、Quantity 基本屬性\n4. 實作 PurchaseRecordService 服務類別，提供記憶體內 CRUD 操作\n5. 建立簡易損益計算功能：(當前價格 - 買入價格) × 買入數量\n6. 實作 PurchaseRecordTable.razor 表格元件，支援基本列表顯示\n7. 建立新增/編輯表單，使用簡單的 Blazor EditForm\n8. 實作刪除確認功能\n9. 建立損益摘要卡片，顯示總投入金額和總獲利/虧損",
+        "testStrategy": "基本 CRUD 操作測試，表單輸入驗證測試，損益計算邏輯測試，基本 UI 功能測試",
+        "status": "in-progress",
+        "dependencies": [
+          3
+        ],
+        "priority": "medium",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "建立基本買入記錄資料模型和服務類別",
+            "description": "建立 PurchaseRecord 資料模型和 PurchaseRecordService 服務類別，提供記憶體內的基本 CRUD 操作功能",
+            "dependencies": [],
+            "details": "1. 建立 Models/PurchaseRecord.cs 資料模型，包含 Id(int)、Date(DateTime)、Price(decimal)、Quantity(int) 屬性\n2. 建立 Services/PurchaseRecordService.cs 服務類別，使用 List<PurchaseRecord> 作為記憶體儲存\n3. 實作基本 CRUD 方法：GetAll()、GetById()、Add()、Update()、Delete()\n4. 在 Program.cs 註冊服務為 Singleton\n5. 加入基本資料驗證邏輯\n<info added on 2025-08-11T16:52:31.234Z>\nSQLite 資料庫架構已完成：建立 PurchaseRecords 表包含 Id(主鍵)、Date、Price、Quantity、Symbol 欄位，加入價格數量檢查約束和索引優化，實作自動時間戳記觸發器。資料庫結構已支援 CRUD 操作和損益計算功能。需要更新 PurchaseRecord.cs 模型加入 Symbol 屬性，並將 PurchaseRecordService.cs 從記憶體儲存改為 Entity Framework Core 實作。\n</info added on 2025-08-11T16:52:31.234Z>\n<info added on 2025-08-11T16:56:01.385Z>\nService 層實作完成：\n1. IPurchaseRecordService 和 PurchaseRecordService 提供完整 CRUD 操作與統計計算功能（總投入金額、總持有數量、平均買入價格）\n2. IProfitLossService 和 ProfitLossService 實作損益計算邏輯，包含單筆損益、總損益、損益百分比、當前市值和 ProfitLossSummary 摘要功能\n3. 所有服務使用 Entity Framework Core 與 SQLite 資料庫整合，支援非同步操作\n4. 包含完整的參數驗證和錯誤處理機制\n資料層和服務層開發完畢，已準備進行 UI 層開發。\n</info added on 2025-08-11T16:56:01.385Z>\n<info added on 2025-08-11T16:59:17.072Z>\n為 Service 層 XML 文件註解補充任務：\n1. IPurchaseRecordService.cs：為所有介面方法（GetAllAsync、GetByIdAsync、AddAsync、UpdateAsync、DeleteAsync、GetTotalInvestmentAsync、GetTotalQuantityAsync、GetAveragePriceAsync）補上完整 XML 註解，包含方法目的說明、參數描述、回傳值說明和可能的例外狀況\n2. PurchaseRecordService.cs：為實作類別的所有公開方法補上實作細節說明，包含資料驗證邏輯、Entity Framework 操作流程和錯誤處理機制\n3. IProfitLossService.cs：為損益計算相關方法（CalculateProfitLossAsync、CalculateTotalProfitLossAsync、GetProfitLossPercentageAsync、CalculateCurrentMarketValueAsync、GetProfitLossSummaryAsync）補上詳細註解，說明計算邏輯和參數要求\n4. ProfitLossService.cs：為實作方法補上損益計算公式說明、市場價格處理邏輯和統計摘要建構過程\n5. 確保所有公開類別、屬性和方法都符合 C# XML 文件註解標準，提供清楚的 IntelliSense 支援和 API 文件生成功能\n</info added on 2025-08-11T16:59:17.072Z>\n<info added on 2025-08-11T17:02:20.866Z>\nXML 文件註解實作全面完成：IPurchaseRecordService.cs 和 PurchaseRecordService.cs 已補上完整的 <summary>、<param>、<returns>、<exception> 標籤，涵蓋所有介面方法和實作細節。註解內容包含 CRUD 操作說明、Entity Framework 整合流程、資料驗證機制、加權平均計算公式和錯誤處理說明。所有註解符合 C# XML 文件標準，提供完整 IntelliSense 支援和 API 文件生成功能。Service 層文件化工作完成，代碼可讀性和維護性大幅提升，子任務 11.1 完全達成。\n</info added on 2025-08-11T17:02:20.866Z>",
+            "status": "done",
+            "testStrategy": "測試資料模型屬性設定、服務類別 CRUD 操作、記憶體資料一致性"
+          },
+          {
+            "id": 2,
+            "title": "建立買入點位主頁面和表單元件",
+            "description": "建立 PurchasePoints.razor 主頁面和 PurchaseRecordForm.razor 表單元件，實作基本的新增和編輯功能",
+            "dependencies": [
+              "1"
+            ],
+            "details": "1. 建立 Components/Pages/PurchasePoints.razor 主頁面，使用 @page \"/purchase-points\" 路由\n2. 建立 Components/PurchaseRecordForm.razor 表單元件，使用 Blazor EditForm\n3. 表單包含買入日期、價格、數量三個基本欄位\n4. 實作表單驗證：價格和數量必須大於 0，日期不能未來\n5. 實作新增和編輯模式切換\n6. 加入簡單的 Bootstrap 樣式\n<info added on 2025-08-14T06:13:28.354Z>\n實作完成摘要：\n1. PurchaseRecordForm.razor 表單元件實作完成，包含完整的 EditForm 驗證機制\n2. PurchasePoints.razor 主頁面更新完成，加入響應式 Bootstrap 樣式和表單整合\n3. PurchaseRecordDto 加入 DataAnnotations 驗證屬性，包含自訂的日期驗證邏輯\n4. 應用程式編譯和運行測試通過，表單驗證功能正常運作\n5. UI 使用響應式設計，支援不同螢幕尺寸的良好顯示效果\n</info added on 2025-08-14T06:13:28.354Z>\n<info added on 2025-08-14T06:36:13.973Z>\nUX 優化完成 - 彈出對話框實作：\n1. 建立 PurchaseRecordDialog.razor 模態對話框元件，基於現有 ConfirmDialog 設計模式\n2. 重構 PurchasePoints.razor 移除內嵌表單，改用對話框操作模式\n3. 加入 @rendermode InteractiveServer 確保 Blazor 伺服器端互動功能\n4. 實作智慧圖標系統：新增操作顯示綠色加號圖標，編輯操作顯示藍色鉛筆圖標\n5. 實作進階互動功能：支援背景點擊關閉和 ESC 鍵盤快速關閉\n6. 驗證所有原有表單驗證邏輯和 CRUD 操作功能完整保留\n7. 完成應用程式整合測試，確認對話框開啟、關閉和資料處理流程正常運作\n</info added on 2025-08-14T06:36:13.973Z>",
+            "status": "done",
+            "testStrategy": "測試頁面路由、表單輸入驗證、新增編輯模式切換、基本 UI 顯示"
+          },
+          {
+            "id": 3,
+            "title": "建立記錄列表顯示和損益計算功能",
+            "description": "實作買入記錄列表顯示、刪除功能和簡易損益計算，完成完整的買入點位管理功能",
+            "dependencies": [
+              "2"
+            ],
+            "details": "1. 在 PurchasePoints.razor 頁面加入記錄列表表格\n2. 顯示買入日期、價格、數量、投入金額欄位\n3. 實作刪除按鈕和確認對話框\n4. 建立損益計算邏輯：使用固定當前價格進行計算\n5. 加入損益摘要區塊，顯示總投入金額和總損益\n6. 實作簡單的排序功能（按日期排序）\n7. 加入基本的響應式設計",
+            "status": "pending",
+            "testStrategy": "測試記錄列表顯示、刪除確認功能、損益計算邏輯準確性、總計數值正確性"
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "title": "修正 SQLite 資料庫錯誤並建立 Entity Framework 遷移",
+        "description": "解決「no such table: PurchaseRecords」錯誤，建立完整的 Entity Framework Core 遷移系統並更新 SQLite 資料庫架構",
+        "details": "1. 建立 Entity Framework Core DbContext 類別，設定 SQLite 連接字串\n2. 定義 PurchaseRecord Entity 模型，包含必要的資料註解和關聯\n3. 在 Program.cs 中註冊 DbContext 服務和 SQLite 提供者\n4. 執行 dotnet ef migrations add InitialCreate 建立初始遷移\n5. 執行 dotnet ef database update 建立實際資料庫表格\n6. 驗證 SQLite 資料庫檔案和 PurchaseRecords 表格正確建立\n7. 更新現有服務類別以使用 Entity Framework 取代記憶體存儲\n8. 建立資料庫種子資料方法，提供測試資料\n9. 處理資料庫連接錯誤和例外狀況\n10. 更新 appsettings.json 設定檔加入資料庫連接字串",
+        "testStrategy": "驗證 Entity Framework 遷移檔案正確產生，確認 SQLite 資料庫檔案建立成功，測試 PurchaseRecords 表格結構符合 Entity 定義，驗證基本 CRUD 操作正常運作，測試資料庫連接失敗時的錯誤處理，確認資料持久化功能正常",
+        "status": "done",
+        "dependencies": [
+          11
+        ],
+        "priority": "medium",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-08-06T14:29:34.738Z",
+      "updated": "2025-08-14T06:36:20.762Z",
+      "description": "Tasks for frontend context"
+    }
+  }
+}

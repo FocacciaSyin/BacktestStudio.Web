@@ -1,0 +1,21 @@
+{
+	"meta": {
+		"generatedAt": "2025-08-07T15:49:31.787Z",
+		"tasksAnalyzed": 1,
+		"totalTasks": 10,
+		"analysisCount": 1,
+		"thresholdScore": 5,
+		"projectName": "Taskmaster",
+		"usedResearch": false
+	},
+	"complexityAnalysis": [
+		{
+			"taskId": 5,
+			"taskTitle": "完成 ApexCharts.NET 整合配置",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "將此任務分解為獨立的配置和實作步驟：服務註冊、ChartService 實作、基礎圖表元件、資料模型建立、圖表配置設定，以及容器架構建立。每個子任務應該是可獨立完成和測試的功能單元。",
+			"reasoning": "此任務涉及多個技術層面的整合工作，包括服務配置、元件架構設計、資料模型轉換等，需要對 Blazor 和 ApexCharts.NET 有深入理解。複雜度中等偏高，建議分解為 6 個子任務以確保每個步驟都能充分實作和驗證。"
+		}
+	]
+}

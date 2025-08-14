@@ -21,7 +21,7 @@ BacktestStudio.Web is a Blazor Server application for stock market strategy back
 dotnet build
 
 # Run in development mode
-dotnet run
+dotnet watch run
 
 # Run with HTTPS (default profile)
 dotnet run --launch-profile https
@@ -139,3 +139,7 @@ Based on the PRD, upcoming development will focus on:
 5. Backtesting engine implementation
 6. Interactive charting with trade markers
 7. Performance analysis and reporting
+
+## Task Master AI Instructions
+**Import Task Master's development workflow commands and guidelines, treat as if import is in the main CLAUDE.md file.**
+@./.taskmaster/CLAUDE.md

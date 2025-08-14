@@ -1,0 +1,95 @@
+@page "/charts"
+
+<PageTitle>圖表分析 - BacktestStudio</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-5 mb-4">圖表分析</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h5><i class="bi bi-graph-up"></i> 價格走勢圖</h5>
+                        </div>
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <button class="btn btn-outline-secondary btn-sm active">日線</button>
+                                <button class="btn btn-outline-secondary btn-sm">週線</button>
+                                <button class="btn btn-outline-secondary btn-sm">月線</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> 圖表功能開發中，即將整合ApexCharts.NET來顯示蠟燭圖和技術指標
+                    </div>
+                    
+                    <!-- 預覽圖表區域 -->
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 400px; border: 2px dashed #dee2e6; border-radius: 0.375rem;">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-graph-up display-1"></i>
+                            <p class="mt-3">蠟燭圖表將在此顯示</p>
+                            <small>包含OHLC資料、移動平均線、交易標記等</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="bi bi-sliders"></i> 技術指標設定</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="ma5" checked>
+                        <label class="form-check-label" for="ma5">MA5 (5日移動平均線)</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="ma10">
+                        <label class="form-check-label" for="ma10">MA10 (10日移動平均線)</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="ma20" checked>
+                        <label class="form-check-label" for="ma20">MA20 (20日移動平均線)</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="ma50">
+                        <label class="form-check-label" for="ma50">MA50 (50日移動平均線)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="bi bi-calendar-range"></i> 時間範圍</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <label class="form-label small">開始日期</label>
+                            <input type="date" class="form-control form-control-sm" value="2024-01-01">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small">結束日期</label>
+                            <input type="date" class="form-control form-control-sm" value="2025-01-01">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-sm mt-3 w-100">更新圖表</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

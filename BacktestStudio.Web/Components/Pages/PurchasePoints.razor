@@ -1,0 +1,167 @@
+
+@page "/purchase-points"
+@using BacktestStudio.Service.Dtos
+@using BacktestStudio.Service
+@rendermode InteractiveServer
+
+<PageTitle>買入點位管理</PageTitle>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-primary">
+                    <i class="bi bi-graph-up me-2"></i>
+                    買入點位管理
+                </h2>
+                <button class="btn btn-success" @onclick="ShowAddDialog">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    新增買入記錄
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-table me-1"></i>
+                        買入記錄列表
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (records == null)
+                    {
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">載入中...</span>
+                            </div>
+                            <p class="mt-2 text-muted">載入中...</p>
+                        </div>
+                    }
+                    else if (!records.Any())
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-inbox display-1 text-muted"></i>
+                            <p class="text-muted mt-3">尚無買入記錄，點擊上方按鈕新增第一筆記錄</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th><i class="bi bi-calendar3 me-1"></i>日期</th>
+                                        <th><i class="bi bi-currency-dollar me-1"></i>價格</th>
+                                        <th><i class="bi bi-hash me-1"></i>數量</th>
+                                        <th><i class="bi bi-gear me-1"></i>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var rec in records.OrderByDescending(r => r.Date))
+                                    {
+                                        <tr>
+                                            <td>@rec.Date.ToString("yyyy-MM-dd")</td>
+                                            <td class="text-end">$@rec.Price.ToString("N2")</td>
+                                            <td class="text-end">@rec.Quantity.ToString("N0")</td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <button class="btn btn-sm btn-outline-primary" @onclick="() => EditRecord(rec)" title="編輯">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteRecord(rec.Id)" title="刪除">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 買入記錄對話框 -->
+<PurchaseRecordDialog @ref="purchaseDialog" 
+                      OnSaved="OnRecordSaved" 
+                      OnCancelled="OnDialogCancelled" />
+
+@code {
+    [Inject]
+    private IPurchaseRecordService PurchaseRecordService { get; set; } = default!;
+
+    private List<PurchaseRecordDto>? records;
+    private PurchaseRecordDialog? purchaseDialog;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRecords();
+    }
+
+    private async Task LoadRecords()
+    {
+        var data = await PurchaseRecordService.GetAllAsync();
+        records = data.Select(x => new PurchaseRecordDto
+        {
+            Id = x.Id,
+            Date = x.Date,
+            Price = x.Price,
+            Quantity = x.Quantity
+        }).ToList();
+    }
+
+    private void ShowAddDialog()
+    {
+        purchaseDialog?.ShowAddDialog();
+    }
+
+    private void EditRecord(PurchaseRecordDto rec)
+    {
+        purchaseDialog?.ShowEditDialog(rec);
+    }
+
+    private async Task DeleteRecord(int id)
+    {
+        await PurchaseRecordService.DeleteAsync(id);
+        await LoadRecords();
+        StateHasChanged();
+    }
+
+    private async Task OnRecordSaved(PurchaseRecordDto record)
+    {
+        if (record.Id == 0)
+        {
+            // 新增
+            await PurchaseRecordService.AddAsync(new Repository.Models.PurchaseRecord
+            {
+                Date = record.Date,
+                Price = record.Price,
+                Quantity = record.Quantity,
+                Symbol = "" // 可擴充
+            });
+        }
+        else
+        {
+            // 編輯
+            await PurchaseRecordService.UpdateAsync(new Repository.Models.PurchaseRecord
+            {
+                Id = record.Id,
+                Date = record.Date,
+                Price = record.Price,
+                Quantity = record.Quantity,
+                Symbol = ""
+            });
+        }
+        await LoadRecords();
+        StateHasChanged();
+    }
+
+    private void OnDialogCancelled()
+    {
+        // 對話框已關閉，無需額外處理
+    }
+}

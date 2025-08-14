@@ -1,0 +1,897 @@
+# BacktestStudio.Web 前端開發需求文件 (Frontend PRD)
+
+## 1. 前端技術架構
+
+### 1.1 核心技術
+- **框架**: ASP.NET Core 8.0 + Blazor Server
+- **UI 框架**: Bootstrap CSS
+- **圖表庫**: ApexCharts.NET
+- **狀態管理**: Blazor 內建狀態管理
+- **HTTP 通信**: HttpClient (與後端 API 通信)
+
+### 1.2 專案結構
+```
+Components/
+├── Layout/
+│   ├── MainLayout.razor
+│   └── NavMenu.razor
+├── Pages/
+│   ├── Dashboard.razor           # 主儀表板
+│   ├── StrategyManager.razor     # 策略管理頁面
+│   ├── ChartView.razor          # 圖表檢視頁面
+│   └── Reports.razor            # 報表分析頁面
+├── Components/
+│   ├── Chart/
+│   │   ├── TradingChart.razor     # K線圖元件
+│   │   ├── CandlestickChart.razor # 蠟燭圖元件
+│   │   ├── TechnicalIndicators.razor # 技術指標覆蓋
+│   │   └── TradeMarkers.razor     # 交易點標記
+│   ├── Strategy/
+│   │   ├── StrategyForm.razor     # 策略建立表單
+│   │   ├── StrategyPanel.razor    # 策略控制面板
+│   │   └── StrategyList.razor     # 策略清單
+│   ├── Performance/
+│   │   ├── PerformancePanel.razor # 績效面板
+│   │   ├── PerformanceTable.razor # 績效表格
+│   │   └── MetricsCard.razor      # 指標卡片
+│   └── Shared/
+│       ├── LoadingSpinner.razor   # 載入動畫
+│       ├── ErrorAlert.razor       # 錯誤提示
+│       └── ConfirmDialog.razor    # 確認對話框
+├── Services/
+│   ├── ApiService.cs              # API 呼叫服務
+│   ├── ChartService.cs           # 圖表資料處理服務
+│   ├── StrategyService.cs        # 策略管理服務
+│   └── NotificationService.cs    # 通知服務
+├── Models/                       # 統一模型管理
+│   ├── Chart/                   # 圖表相關模型
+│   │   ├── ChartDataPoint.cs       # 統一的圖表數據點模型
+│   │   ├── CandlestickData.cs      # K線圖資料模型
+│   │   ├── ApexCandlestickSeries.cs # ApexCharts K線圖資料序列格式
+│   │   ├── ApexCandlestickDataPoint.cs # ApexCharts K線資料點
+│   │   └── ChartOptions.cs         # 圖表配置選項模型
+│   ├── DTOs/                    # 資料傳輸物件
+│   │   ├── MarketDataPoint.cs      # 市場數據點
+│   │   ├── TechnicalIndicatorData.cs # 技術指標數據
+│   │   ├── StrategyDto.cs          # 策略數據傳輸對象
+│   │   └── PerformanceMetrics.cs   # 績效指標
+│   └── ViewModels/              # 檢視模型
+│       └── DashboardViewModel.cs   # 主儀表板視圖模型
+└── wwwroot/
+    ├── css/
+    │   ├── app.css              # 全域樣式
+    │   └── components/          # 元件專屬樣式
+    ├── js/
+    │   └── chart-helpers.js     # 圖表輔助 JavaScript
+    └── images/
+```
+
+## 2. 核心頁面與元件規格
+
+### 2.1 主儀表板 (Dashboard.razor)
+
+#### 功能需求
+- 整合式交易檢視介面
+- 即時績效指標顯示
+- 策略快速切換
+- 圖表與資料的同步更新
+
+#### 元件構成
+```html
+<TradingDashboard>
+  <div class="row">
+    <div class="col-md-3">
+      <StrategyPanel />
+    </div>
+    <div class="col-md-6">
+      <ChartComponent>
+        <CandlestickChart />
+        <TechnicalIndicators />
+        <TradeMarkers />
+      </ChartComponent>
+    </div>
+    <div class="col-md-3">
+      <PerformancePanel />
+    </div>
+  </div>
+</TradingDashboard>
+```
+
+#### 狀態管理
+- 當前選擇的策略
+- 圖表顯示時間範圍
+- 技術指標啟用狀態
+- 載入狀態管理
+
+### 2.2 策略管理頁面 (StrategyManager.razor)
+
+#### 功能需求
+- 策略 CRUD 操作介面
+- 策略參數設定表單
+- 策略清單檢視
+- 批次操作功能
+
+#### 子元件
+- **StrategyForm.razor**: 策略建立/編輯表單
+- **StrategyList.razor**: 策略清單與操作按鈕
+- **StrategyDetails.razor**: 策略詳細資訊檢視
+
+#### 表單驗證
+- 必填欄位驗證
+- 數值範圍驗證
+- 自訂驗證規則
+
+### 2.3 圖表檢視 (ChartView.razor)
+
+#### 功能需求
+- 全螢幕圖表檢視
+- 多時間框架切換
+- 技術指標控制面板
+- 圖表工具列
+
+#### 圖表元件架構
+```csharp
+<ChartContainer>
+  <ChartToolbar>
+    <TimeFrameSelector />
+    <IndicatorToggle />
+    <ChartTypeSelector />
+  </ChartToolbar>
+  
+  <ApexChart @ref="chart" TItem="MarketDataPoint">
+    <ApexPointSeries />
+    <ApexLineSeries /> <!-- MA 線 -->
+    <ApexAnnotations /> <!-- 交易點標記 -->
+  </ApexChart>
+  
+  <ChartLegend />
+</ChartContainer>
+```
+
+### 2.4 報表分析 (Reports.razor)
+
+#### 功能需求
+- 策略績效比較表格
+- 統計指標視覺化
+- 報表匯出功能
+- 篩選與排序
+
+#### 報表類型
+- 策略獲利排行
+- 詳細交易記錄
+- 風險指標分析
+- 時間區間績效
+
+## 3. 關鍵元件詳細規格
+
+### 3.1 TradingChart.razor (K線圖元件)
+
+#### Props 參數
+```csharp
+[Parameter] public List<MarketDataPoint> Data { get; set; }
+[Parameter] public List<TechnicalIndicator> Indicators { get; set; }
+[Parameter] public List<TradePoint> TradeMarkers { get; set; }
+[Parameter] public EventCallback<DateRange> OnTimeRangeChanged { get; set; }
+[Parameter] public string Height { get; set; } = "400px";
+```
+
+#### 功能特性
+- 可縮放與平移
+- 滑鼠懸停資訊顯示
+- 即時資料更新
+- 多種技術指標覆蓋
+- 交易點位標記
+
+#### 效能考量
+- 資料虛擬化 (大量資料點)
+- 延遲載入技術指標
+- 圖表重繪優化
+
+### 3.2 StrategyPanel.razor (策略控制面板)
+
+#### 功能元素
+- 策略選擇下拉選單
+- 快速動作按鈕 (執行回測、編輯、刪除)
+- 策略狀態指示器
+- 績效摘要卡片
+
+#### 互動行為
+- 策略切換時通知父元件
+- 即時績效更新
+- 操作確認對話框
+
+### 3.3 PerformancePanel.razor (績效面板)
+
+#### 顯示指標
+- 總獲利/虧損
+- 勝率百分比
+- 最大回撤
+- 夏普比率
+- 交易次數
+- 平均獲利
+
+#### 視覺化元素
+- 指標卡片
+- 迷你趨勢圖
+- 進度條
+- 狀態顏色編碼
+
+## 4. 使用者體驗設計
+
+### 4.1 響應式設計
+- **桌面 (≥1200px)**: 三欄式佈局
+- **平板 (768-1199px)**: 兩欄式佈局，圖表優先
+- **手機 (<768px)**: 單欄式，可折疊面板
+
+### 4.2 載入狀態管理
+```csharp
+// 載入狀態枚舉
+public enum LoadingState 
+{
+    Idle,
+    Loading,
+    Success,
+    Error
+}
+
+// 使用範例
+<LoadingWrapper State="@loadingState">
+    <LoadingTemplate>
+        <LoadingSpinner Message="載入中..." />
+    </LoadingTemplate>
+    <ErrorTemplate>
+        <ErrorAlert Message="@errorMessage" />
+    </ErrorTemplate>
+    <SuccessTemplate>
+        <!-- 正常內容 -->
+    </SuccessTemplate>
+</LoadingWrapper>
+```
+
+### 4.3 錯誤處理
+- 全域錯誤邊界
+- API 呼叫錯誤處理
+- 使用者友善錯誤訊息
+- 重試機制
+
+### 4.4 通知系統
+- 成功操作提示
+- 錯誤警告
+- 確認對話框
+- Toast 通知
+
+## 5. 前端服務架構
+
+### 5.1 ApiService.cs
+```csharp
+public interface IApiService
+{
+    Task<List<Strategy>> GetStrategiesAsync();
+    Task<Strategy> CreateStrategyAsync(StrategyCreateDto dto);
+    Task<Strategy> UpdateStrategyAsync(int id, StrategyUpdateDto dto);
+    Task DeleteStrategyAsync(int id);
+    Task<List<MarketDataPoint>> GetMarketDataAsync(DateRange range);
+    Task<BacktestResult> RunBacktestAsync(int strategyId);
+}
+```
+
+### 5.2 ChartService.cs
+```csharp
+public interface IChartService
+{
+    Task<ChartData> PrepareChartDataAsync(List<MarketDataPoint> data);
+    Task<List<IndicatorData>> CalculateIndicatorsAsync(List<MarketDataPoint> data);
+    void UpdateChartAnnotations(List<TradePoint> trades);
+    Task ExportChartAsync(string format);
+}
+```
+
+### 5.3 狀態管理服務
+```csharp
+public class AppState
+{
+    public Strategy? SelectedStrategy { get; set; }
+    public DateRange TimeRange { get; set; }
+    public List<TechnicalIndicatorType> EnabledIndicators { get; set; }
+    public LoadingState LoadingState { get; set; }
+    
+    public event Action? OnChange;
+    
+    public void SetSelectedStrategy(Strategy strategy)
+    {
+        SelectedStrategy = strategy;
+        NotifyStateChanged();
+    }
+    
+    private void NotifyStateChanged() => OnChange?.Invoke();
+}
+```
+
+## 6. 效能優化策略
+
+### 6.1 資料載入優化
+- 分頁載入大量歷史資料
+- 虛擬滾動長清單
+- 快取常用資料
+- 預取下一頁資料
+
+### 6.2 圖表渲染優化
+- 資料點採樣 (大資料集)
+- 延遲載入技術指標
+- 圖表重用機制
+- WebAssembly 模式考量
+
+### 6.3 元件效能
+- 適當使用 `@key` 指令
+- 避免不必要的重新渲染
+- 使用 `ShouldRender()` 優化
+- 非同步載入非關鍵元件
+
+## 7. 測試策略
+
+### 7.1 單元測試
+- 元件邏輯測試
+- 服務類別測試
+- 資料驗證測試
+
+### 7.2 整合測試
+- API 呼叫測試
+- 元件互動測試
+- 狀態管理測試
+
+### 7.3 UI 測試
+- 頁面載入測試
+- 使用者互動測試
+- 響應式佈局測試
+
+## 8. 開發進度狀況 (更新日期: 2025-08-06)
+
+### ✅ Phase 1: 基礎架構 - 已完成
+1. ✅ **專案結構建立** - 完成資料夾組織 (Components/, Services/, Models/DTOs/, Models/ViewModels/)
+2. ✅ **基礎元件與佈局** - 完成 MainLayout, NavMenu, 共用元件 (LoadingSpinner, ErrorAlert, LoadingWrapper)
+3. ✅ **API 服務設定** - 完成 IApiService 介面定義與 MockApiService 實作
+4. ✅ **狀態管理實作** - 完成 AppState 服務，包含策略選擇、時間範圍、載入狀態管理
+
+#### 基礎架構詳細成果
+- **專案配置**: Program.cs 中完成服務注入 (AppState, IApiService, IChartService, HttpClient)
+- **資料模型**: 完成 DTO 類別 (StrategyDto, MarketDataPoint, PerformanceMetrics, TechnicalIndicatorData)
+- **導航系統**: 完成四大功能頁面導航 (儀表板、策略管理、圖表分析、分析報表)
+- **頁面骨架**: 建立完整頁面結構
+  - Dashboard.razor (主儀表板) - 包含快速統計卡片、快速開始面板
+  - Strategies.razor (策略管理) - 包含策略清單預覽
+  - Charts.razor (圖表分析) - 包含圖表區域和控制面板設計
+  - Reports.razor (分析報表) - 包含績效總覽和詳細交易記錄
+
+### ✅ Phase 2: 佈局系統與基礎UI - 已完成
+1. ✅ **導航系統優化** - 完成NavMenu更新，新增四大功能頁面導航連結
+2. ✅ **響應式設計驗證** - 完成響應式導航測試，確保各螢幕尺寸正常運作
+3. ✅ **共用元件實作** - 完成ConfirmDialog元件實作，支援自訂訊息、圖示、按鈕樣式
+4. ✅ **全域CSS樣式優化** - 完成金融主題樣式系統，包含色彩變數、數字字體、UI元件
+5. ✅ **佈局整合測試** - 即將完成整合測試，確保所有元件協同工作
+
+### 🚧 Phase 3: 核心功能開發 - 準備開始
+1. ⏸️ **策略管理介面** - 待開始 (已有頁面骨架和ConfirmDialog整合)
+2. ⏸️ **K線圖與技術指標** - ApexCharts.NET 已安裝，待完成服務註冊和圖表元件實作
+3. ⏸️ **儀表板整合** - 待開始元件間整合
+4. ⏸️ **基礎互動功能** - 待開始
+
+#### 當前進行任務
+- **任務2.5**: 整合測試佈局元件與導航系統 (進行中)
+- **任務5**: 完成 ApexCharts.NET 整合配置 (下一步)
+- **任務4**: 策略管理功能實作 (準備開始)
+
+### ⏸️ Phase 3: 進階功能 - 待開始
+1. 報表與分析頁面 - 已有基礎框架
+2. 效能優化
+3. 錯誤處理完善
+4. 響應式設計調整
+
+### ⏸️ Phase 4: 完善與測試 - 待開始
+1. UI/UX 優化
+2. 測試涵蓋率提升
+3. 文件完成
+4. 部署準備
+
+## 8.1 開發優先順序 (原計劃)
+
+## 9. 技術實作注意事項
+
+## 8.5 模型架構規範與實作狀況 (2025-08-07)
+
+### 8.5.1 模型統一管理策略
+
+#### 模型組織原則
+所有 Claude 產生的 Model 類別統一放在 `/Models` 資料夾底下，按照功能和用途分類組織，確保架構清晰和維護性。
+
+#### 已完成的模型重構
+```
+Models/Chart/                           # 圖表相關模型 (已完成重構)
+├── ChartDataPoint.cs                   # ✅ 統一的圖表數據點模型
+├── CandlestickData.cs                  # ✅ K線圖資料模型 (OHLCV)
+├── ApexCandlestickSeries.cs            # ✅ ApexCharts K線圖資料序列格式
+├── ApexCandlestickDataPoint.cs         # ✅ ApexCharts K線資料點
+└── ChartOptions.cs                     # ✅ 圖表配置選項模型
+```
+
+#### 現有模型結構
+```
+Models/DTOs/                            # 數據傳輸對象
+├── MarketDataPoint.cs                  # ✅ 市場數據點
+├── TechnicalIndicatorData.cs           # ✅ 技術指標數據
+├── StrategyDto.cs                      # ✅ 策略數據傳輸對象  
+└── PerformanceMetrics.cs              # ✅ 績效指標
+
+Models/ViewModels/                      # 檢視模型
+└── DashboardViewModel.cs              # ✅ 主儀表板視圖模型
+```
+
+### 8.5.2 模型設計規範 (已實施)
+
+#### 核心原則
+- **單一職責**: 每個模型類別只負責一個特定的數據結構
+- **完整文檔**: 每個類別和欄位都必須有詳細的XML註解
+- **統一命名**: 使用描述性的類別和屬性命名  
+- **獨立文件**: 每個類別使用獨立的 .cs 文件
+
+#### 命名慣例 (已標準化)
+- **模型類別**: 使用描述性名稱，例如 `ChartDataPoint`, `CandlestickData`
+- **檔案命名**: 每個類別一個檔案，檔案名稱與類別名稱相同
+- **命名空間**: 統一使用 `BacktestStudio.Web.Models.Chart` 等分類命名空間
+
+#### XML 註解標準 (已實施)
+每個模型都包含完整的XML註解：
+```csharp
+/// <summary>
+/// K線圖資料模型
+/// </summary>
+public class CandlestickData
+{
+    /// <summary>
+    /// 交易日期
+    /// </summary>
+    public DateTime Date { get; set; }
+
+    /// <summary>
+    /// 開盤價
+    /// </summary>
+    public decimal Open { get; set; }
+    
+    // ... 其他欄位皆有詳細註解
+}
+```
+
+### 8.5.3 重構成果與驗證
+
+#### 完成的重構工作
+✅ **模型拆分**: 將 `CandlestickData.cs` 中的4個類別拆分成獨立文件  
+✅ **詳細註解**: 為所有類別和欄位補上完整的XML註解  
+✅ **內嵌類別遷移**: 將 `TradingChart.razor` 中的 `ChartDataPoint` 移至獨立模型文件  
+✅ **引用更新**: 在相關元件中添加正確的 `@using` 指令  
+✅ **編譯驗證**: 確認所有引用正確，無編譯錯誤  
+
+#### 模型文件詳細內容
+
+**ChartDataPoint.cs**:
+```csharp
+/// <summary>
+/// 統一的圖表數據點模型
+/// </summary>
+public class ChartDataPoint
+{
+    /// <summary>
+    /// X軸數值（通常為時間戳）
+    /// </summary>
+    public decimal X { get; set; }
+
+    /// <summary>
+    /// Y軸數值（價格或指標值）
+    /// </summary>
+    public decimal Y { get; set; }
+}
+```
+
+**CandlestickData.cs**:
+```csharp
+/// <summary>
+/// K線圖資料模型
+/// </summary>
+public class CandlestickData
+{
+    /// <summary>
+    /// 交易日期
+    /// </summary>
+    public DateTime Date { get; set; }
+
+    /// <summary>
+    /// 開盤價
+    /// </summary>
+    public decimal Open { get; set; }
+
+    /// <summary>
+    /// 最高價
+    /// </summary>
+    public decimal High { get; set; }
+
+    /// <summary>
+    /// 最低價
+    /// </summary>
+    public decimal Low { get; set; }
+
+    /// <summary>
+    /// 收盤價
+    /// </summary>
+    public decimal Close { get; set; }
+
+    /// <summary>
+    /// 成交量
+    /// </summary>
+    public long Volume { get; set; }
+}
+```
+
+**ApexCandlestickSeries.cs**:
+```csharp
+/// <summary>
+/// ApexCharts K線圖資料序列格式
+/// </summary>
+public class ApexCandlestickSeries
+{
+    /// <summary>
+    /// 序列名稱，用於圖表圖例顯示
+    /// </summary>
+    public string Name { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 圖表資料陣列，包含K線資料點
+    /// </summary>
+    public object[] Data { get; set; } = Array.Empty<object>();
+}
+```
+
+**ApexCandlestickDataPoint.cs**:
+```csharp
+/// <summary>
+/// ApexCharts K線資料點模型
+/// </summary>
+public class ApexCandlestickDataPoint
+{
+    /// <summary>
+    /// X軸時間戳（Unix毫秒時間戳）
+    /// </summary>
+    public long X { get; set; }
+
+    /// <summary>
+    /// Y軸OHLC價格陣列，順序為 [開盤價, 最高價, 最低價, 收盤價]
+    /// </summary>
+    public decimal[] Y { get; set; } = new decimal[4];
+}
+```
+
+**ChartOptions.cs**:
+```csharp
+/// <summary>
+/// 圖表配置選項模型
+/// </summary>
+public class ChartOptions
+{
+    /// <summary>
+    /// 圖表主題，支援 "light" 或 "dark"
+    /// </summary>
+    public string Theme { get; set; } = "light";
+
+    /// <summary>
+    /// 是否顯示圖表工具列
+    /// </summary>
+    public bool ShowToolbar { get; set; } = true;
+
+    /// <summary>
+    /// 是否顯示圖表網格線
+    /// </summary>
+    public bool ShowGrid { get; set; } = true;
+
+    /// <summary>
+    /// 圖表顏色配置陣列，預設為綠色（上漲）和紅色（下跌）
+    /// </summary>
+    public string[] Colors { get; set; } = { "#00E396", "#FF4560" };
+}
+```
+
+### 8.5.4 模型使用範例
+
+在 `TradingChart.razor` 中的正確使用方式：
+```razor
+@inject IChartService ChartService
+@using BacktestStudio.Web.Models.Chart
+
+<ApexChart TItem="ChartDataPoint"
+           Options="@_chartOptions"
+           @ref="_chart"
+           Height="@Height">
+
+    <ApexPointSeries TItem="ChartDataPoint"
+                     Items="@_chartDataPoints"
+                     Name="價格"
+                     SeriesType="SeriesType.Line"
+                     XValue="@((item) => item.X)"
+                     YValue="@((item) => item.Y)"/>
+</ApexChart>
+
+@code {
+    private List<ChartDataPoint> _chartDataPoints = new();
+    
+    // 資料轉換範例
+    _chartDataPoints = ChartData.PriceData.Select(item => new ChartDataPoint
+    {
+        X = (decimal)new DateTimeOffset(item.Date).ToUnixTimeMilliseconds(),
+        Y = item.Close
+    }).ToList();
+}
+```
+
+### 8.5.5 品質保證與驗證
+
+#### 編譯驗證
+✅ 所有模型檔案編譯成功，無警告或錯誤  
+✅ 命名空間引用正確，無重複定義  
+✅ XML註解格式正確，支援智能感知  
+
+#### 結構驗證
+✅ 檔案結構清晰，每個模型職責單一  
+✅ 模型間依賴關係明確  
+✅ 符合 DRY (Don't Repeat Yourself) 原則  
+
+### 8.5.6 未來擴展規劃
+
+#### 待新增模型分類
+```
+Models/Enums/                           # 列舉類型統一管理 (規劃中)
+├── ChartEnums.cs                       # 圖表相關列舉
+├── StrategyEnums.cs                    # 策略相關列舉
+├── TradeEnums.cs                       # 交易相關列舉
+└── CommonEnums.cs                      # 通用列舉
+
+Models/Interfaces/                      # 模型介面 (規劃中)  
+├── IChartData.cs                       # 圖表數據介面
+├── IMarketData.cs                      # 市場數據介面
+└── IPerformanceData.cs                 # 績效數據介面
+
+Models/Extensions/                      # 模型擴展方法 (規劃中)
+├── ChartExtensions.cs                  # 圖表模型擴展
+├── DataExtensions.cs                   # 數據模型擴展
+└── ValidationExtensions.cs             # 驗證擴展方法
+```
+
+#### 開發規範檢查清單
+在新增任何模型時，開發者需要確認：
+- [ ] 模型放置在正確的資料夾分類
+- [ ] 使用適當的命名空間
+- [ ] 遵循命名慣例 (PascalCase)
+- [ ] 添加完整的XML註解 (類別和所有公開成員)
+- [ ] 考慮是否需要介面或繼承
+- [ ] 使用獨立的.cs文件
+- [ ] 編譯無警告或錯誤
+
+### 9.1 ApexCharts.NET 整合
+- 正確的資料格式轉換
+- 圖表配置最佳化
+- 效能監控與調整
+- 自訂主題支援
+
+### 9.2 Blazor Server 最佳實務
+- SignalR 連接管理
+- 狀態序列化考量
+- 記憶體洩漏防範
+- 網路延遲處理
+
+### 9.3 Bootstrap 整合
+- 自訂主題變數
+- 元件樣式一致性
+- Dark Mode 支援
+- 無障礙設計
+
+### 9.4 國際化準備
+- 多語言資源檔案
+- 日期時間格式
+- 數字與貨幣格式
+- 文字方向支援
+
+## 10. 品質與維護
+
+### 10.1 程式碼品質
+
+#### 10.1.1 一致的命名規範
+- Pascal Case: 類別、介面、方法、屬性
+- Camel Case: 參數、區域變數、私有欄位
+- 介面名稱以 `I` 開頭 (如 `IPurchaseRecordService`)
+- 服務類別以 `Service` 結尾 (如 `PurchaseRecordService`)
+
+#### 10.1.2 XML 文件註解標準
+
+**必要註解標籤:**
+- `<summary>`: 類別、介面、方法的功能說明
+- `<param>`: 方法參數的詳細說明
+- `<returns>`: 方法回傳值的說明
+- `<exception>`: 可能拋出的例外狀況
+
+**註解撰寫規範:**
+```csharp
+/// <summary>
+/// 買入記錄服務介面，提供買入記錄的 CRUD 操作和統計計算功能
+/// </summary>
+public interface IPurchaseRecordService
+{
+    /// <summary>
+    /// 根據 ID 取得特定的買入記錄
+    /// </summary>
+    /// <param name="id">買入記錄的唯一識別碼</param>
+    /// <returns>找到的買入記錄，若不存在則返回 null</returns>
+    /// <exception cref="ArgumentException">當 ID 小於或等於 0 時拋出</exception>
+    /// <exception cref="InvalidOperationException">當資料庫操作發生錯誤時拋出</exception>
+    Task<PurchaseRecord?> GetByIdAsync(int id);
+}
+```
+
+**註解內容要求:**
+1. **功能描述**: 清楚說明方法或類別的用途
+2. **參數說明**: 描述每個參數的意義、格式和限制
+3. **回傳值說明**: 說明回傳資料的格式和意義
+4. **例外狀況**: 列出所有可能的例外情況和觸發條件
+5. **計算公式**: 對於計算類方法，須說明使用的公式
+6. **實作細節**: 對於複雜邏輯，說明關鍵實作步驟
+
+**Service 層註解範例:**
+```csharp
+/// <summary>
+/// 計算加權平均買入價格，載入相關記錄後在記憶體中進行計算
+/// 使用加權平均方式確保價格反映實際投入比例
+/// </summary>
+/// <param name="symbol">股票代碼，若為 null 則計算所有股票的平均買入價格</param>
+/// <returns>加權平均買入價格，公式：總投入金額 ÷ 總持有數量，若沒有買入記錄則返回 0</returns>
+/// <exception cref="InvalidOperationException">當資料庫操作發生錯誤時拋出</exception>
+public async Task<decimal> GetAveragePurchasePriceAsync(string? symbol = null)
+{
+    // 使用加權平均價格計算：總投入金額 ÷ 總數量
+    // 這樣可以準確反映不同價格和數量的買入對平均價格的影響
+}
+```
+
+#### 10.1.3 型別安全考量
+- 啟用 Nullable Reference Types
+- 使用強型別模型避免 magic strings
+- 善用泛型提升程式碼重用性
+
+#### 10.1.4 錯誤處理標準
+- 使用明確的例外類型 (`ArgumentException`, `InvalidOperationException`)
+- 提供有意義的錯誤訊息
+- 記錄關鍵操作的錯誤資訊
+
+### 10.2 維護性
+- 模組化設計
+- 可重用元件
+- 配置檔案管理
+- 版本升級策略
+
+### 10.3 監控與診斷
+- 前端錯誤追蹤
+- 效能指標監控
+- 使用者行為分析
+- A/B 測試準備
+
+## 11. 技術實作現況詳細說明 (2025-08-06)
+
+### 11.1 已實作的核心服務
+```csharp
+// Program.cs 中的服務注入配置
+builder.Services.AddSingleton<AppState>();
+builder.Services.AddScoped<IApiService, MockApiService>();
+builder.Services.AddScoped<IChartService, ChartService>();
+builder.Services.AddHttpClient();
+```
+
+### 11.2 完整的 API 服務實作
+- **IApiService**: 完整介面定義，包含策略CRUD、市場資料、技術指標、交易點、績效指標等方法
+- **MockApiService**: 完整的模擬實作，包含假資料生成邏輯，支援所有開發階段需求
+- **資料處理**: 完成移動平均線計算、交易點生成、績效指標計算等邏輯
+
+### 11.3 狀態管理架構
+```csharp
+// AppState.cs - 完整的狀態管理服務
+public class AppState
+{
+    public StrategyDto? SelectedStrategy { get; private set; }
+    public DateRange TimeRange { get; private set; }
+    public List<TechnicalIndicatorType> EnabledIndicators { get; private set; }
+    public LoadingState LoadingState { get; private set; }
+    public event Action? OnChange;
+    // 完整的狀態變更方法實作
+}
+```
+
+### 11.4 資料模型完整性
+**完成的 DTO 類別**:
+- `StrategyDto`: 包含完整的策略資訊 (Id, Name, Description, StrategyType, 交易參數等)
+- `MarketDataPoint`: OHLCV 資料結構
+- `PerformanceMetrics`: 完整的績效指標 (獲利、勝率、回撤、夏普比率等)
+- `TechnicalIndicatorData`: 技術指標資料 (MA5, MA10, MA20, MA50)
+- `TradePoint`: 交易點資料 (日期、價格、類型、數量、策略名稱)
+
+**支援的枚舉類型**:
+- `StrategyType`: Long, Short
+- `TradeType`: Buy, Sell
+- `PositionType`: Long, Short
+- `LoadingState`: Idle, Loading, Success, Error
+- `TechnicalIndicatorType`: MA5, MA10, MA20, MA50
+
+### 11.5 頁面結構實作狀況
+
+#### Dashboard.razor (主儀表板)
+- ✅ 完整的響應式佈局
+- ✅ 快速統計卡片 (策略數量、交易次數、勝率、總獲利)
+- ✅ 快速開始面板，包含三大功能區域連結
+- ✅ Bootstrap 圖示整合
+- ✅ 適合金融應用的色彩編碼
+
+#### Strategies.razor (策略管理)
+- ✅ 策略管理頁面架構
+- ✅ 新增策略按鈕
+- ✅ 策略清單表格 (包含模擬資料)
+- ✅ 操作按鈕組 (編輯、檢視、刪除)
+- ✅ 策略狀態徽章 (啟用/停用、多頭/空頭)
+
+#### Charts.razor (圖表分析)
+- ✅ 圖表容器設計
+- ✅ 時間框架切換按鈕組
+- ✅ 技術指標開關控制面板
+- ✅ 時間範圍選擇器
+- ✅ 預留 ApexCharts 整合空間
+
+#### Reports.razor (分析報表)
+- ✅ 績效總覽卡片
+- ✅ 報表匯出按鈕 (CSV, PDF)
+- ✅ 績效趨勢圖預留空間
+- ✅ 詳細交易記錄表格 (包含模擬資料)
+- ✅ 報表篩選控制面板
+- ✅ 分頁導航
+
+### 11.6 共用元件實作
+- ✅ `LoadingSpinner.razor`: 載入動畫元件
+- ✅ `ErrorAlert.razor`: 錯誤提示元件  
+- ✅ `LoadingWrapper.razor`: 載入狀態包裝器
+- ✅ `ConfirmDialog.razor`: 確認對話框元件 - 支援自訂標題、訊息、圖示、按鈕樣式，含背景點擊關閉功能
+
+### 11.7 導航與路由
+- ✅ 完整的 NavMenu.razor 更新
+- ✅ 四大功能頁面路由配置
+- ✅ Bootstrap 圖示整合
+- ✅ 中文化導航文字
+- ✅ 移除舊的範例頁面
+
+### 11.8 Bootstrap 與樣式整合
+- ✅ Bootstrap CSS 完整整合
+- ✅ 響應式網格系統使用
+- ✅ Bootstrap 圖示 (Bootstrap Icons) 整合，已添加CDN連結
+- ✅ 金融主題色彩系統 - 自訂CSS變數支援綠色上漲、紅色下跌、中性灰色
+- ✅ 等寬數字字體配置 - 適合金融數據顯示
+- ✅ 金融UI元件 - 數據卡片(.data-card)、統計數字(.stat-number)、變化指示器(.stat-change)
+- ✅ 金融專用工具類別 - .text-gain, .text-loss, .badge-gain, .badge-loss等
+- ✅ 響應式設計優化，針對移動設備優化統計數字和表格顯示
+
+### 11.9 待完成的關鍵項目
+1. **佈局系統整合測試**: 完成端到端的佈局功能測試，確保頁面間導航流暢性和一致性
+2. **ApexCharts.NET 服務註冊**: 已安裝套件，需在 Program.cs 中註冊服務
+3. **ChartService 完整實作**: 介面已定義，需完成具體實作
+4. **元件間資料流整合**: 需實作 AppState 與各頁面元件的資料綁定
+5. **策略管理功能實作**: 基於已完成的ConfirmDialog，實作完整的CRUD功能
+
+### 11.10 開發環境狀況
+- ✅ .NET 8.0 專案建置成功
+- ✅ 僅有1個nullable warning，無編譯錯誤
+- ✅ 所有路由和頁面可正常訪問
+- ✅ Bootstrap CSS 和圖示載入正常
+
+### 11.11 下一步開發重點
+1. 完成任務 2.2-2.5：佈局系統完善
+2. 完成任務 5：ApexCharts.NET 整合
+3. 完成任務 4：策略管理功能實作
+4. 完成任務 8：績效面板實作
+5. 完成任務 6：圖表元件實作
